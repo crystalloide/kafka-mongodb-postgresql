@@ -82,7 +82,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
 | PostgreSQL           | `localhost:5432` (formation/formation) |
 | MongoDB              | `localhost:27017` (formation/formation) |
 | Kafka UI             | `http://localhost:8080`      |
-| Hawtio (JMX)         | `http://localhost:8888`      |
+| Hawtio (JMX)         | `http://localhost:8888/hawtio`      |
 | Console Redpanda     | `http://localhost:8090`      |
 
 ## Démarrage
