@@ -36,6 +36,8 @@ formation-env/
 ├── kafka/
 │   └── Dockerfile            
 ├── connect/
+│   └── Dockerfile
+├── hawtio/
 │   └── Dockerfile             
 ├── connect-configs/
 │   └── connect-source-postgres.json
