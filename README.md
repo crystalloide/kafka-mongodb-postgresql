@@ -120,9 +120,32 @@ curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
 ```
 
-Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante
-vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour
-visualiser les MBeans JMX de chaque broker.
+# Test de bout en bout :
+
+Pour valider que le pipeline fonctionne réellement (Postgres → Kafka → Postgres), vous pouvez :
+
+## Consommer les messages produits par le connecteur source
+
+```bash
+docker exec -it kafka1 kafka-console-consumer --bootstrap-server localhost:19092 --topic pg-clients --from-beginning --max-messages 3
+```
+
+## Vérifier que le connecteur sink a bien réinjecté les données dans la table clients_sink
+
+```bash
+docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM clients_sink;"
+Si les 3 clients (Alice, Bruno, Chloé) apparaissent dans clients_sink, le pipeline JDBC source→sink fonctionne de bout en bout.
+```
+
+## Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
+
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
+```
+
+
+
+# Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
 
 ## Points d'attention pour la suite
 
