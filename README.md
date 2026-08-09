@@ -26,9 +26,9 @@ git clone https://github.com/crystalloide/kafka-mongodb-postgresql.git
 cd ~/kafka-mongodb-postgresql/formation-env/
 ```
 
-# Environnement de formation Python — Kafka / PostgreSQL / MongoDB
+### Environnement de formation Python — Kafka / PostgreSQL / MongoDB
 
-## Arborescence :
+### Arborescence :
 
 ```
 formation-env/
@@ -48,7 +48,7 @@ formation-env/
 
 Le build a besoin d'un accès Internet pour télécharger les images Confluent, l'agent Jolokia et le connecteur JDBC via **confluent-hub**
 
-## Choix techniques
+### Choix techniques
 
 - **Kafka 3.8.1** : les images officielles Apache ne publient pas
   directement un tag `3.8.1` stable avec toutes les variables d'env
@@ -75,7 +75,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
   protocole Kafka, elle fonctionne sans problème contre un cluster Kafka
   standard[web:8][web:15], pointée ici sur les 3 brokers et sur Connect.
 
-## Accès aux interfaces
+### Accès aux interfaces
 
 | Service            | URL                          |
 |---------------------|-------------------------------|
@@ -87,7 +87,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
 | Hawtio (JMX)         | `http://localhost:8888/hawtio`      |
 | Console Redpanda     | `http://localhost:8090`      |
 
-## Démarrage
+### Démarrage
 
 ```bash
 docker compose build
@@ -120,24 +120,24 @@ curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
 ```
 
-# Test de bout en bout :
+### Test de bout en bout :
 
 Pour valider que le pipeline fonctionne réellement (Postgres → Kafka → Postgres), vous pouvez :
 
-## Consommer les messages produits par le connecteur source
+#### Consommer les messages produits par le connecteur source
 
 ```bash
 docker exec -it kafka1 kafka-console-consumer --bootstrap-server localhost:19092 --topic pg-clients --from-beginning --max-messages 3
 ```
 
-## Vérifier que le connecteur sink a bien réinjecté les données dans la table clients_sink
+#### Vérifier que le connecteur sink a bien réinjecté les données dans la table clients_sink
 
 ```bash
 docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM clients_sink;"
 Si les 3 clients (Alice, Bruno, Chloé) apparaissent dans clients_sink, le pipeline JDBC source→sink fonctionne de bout en bout.
 ```
 
-## Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
+#### Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
 
 ```bash
 curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
@@ -145,9 +145,9 @@ curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
 
 
 
-# Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
+### Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
 
-## Points d'attention pour la suite
+### Points d'attention pour la suite
 
 - Générer un nouveau `CLUSTER_ID` si vous dupliquez cet environnement pour
   plusieurs postes (`kafka-storage random-uuid`).
