@@ -37,6 +37,9 @@ formation-env/
 │   └── Dockerfile              # renommer kafka-Dockerfile.txt
 ├── connect/
 │   └── Dockerfile              # renommer connect-Dockerfile.txt
+├── connect-configs/
+│   └── connect-source-postgres.json
+│   └── connect-sink-postgres.json
 └── postgres/
     └── init.sql                # renommer postgres-init.sql
 ```
