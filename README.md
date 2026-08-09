@@ -149,7 +149,6 @@ curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
 
 <img width="732" height="473" alt="Add connection hawtio" src="https://github.com/user-attachments/assets/f5c8cd99-ad81-479f-841d-acf60379982b" />
 
-https://github.com/crystalloide/kafka-mongodb-postgresql/tree/d57047d0c5a83a8f9289761907ad08339abd591e/formation-env
 
 ### Points d'attention pour la suite
 
