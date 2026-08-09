@@ -18,6 +18,6 @@ pwd
 
 ```bash
 cd ~
-sudo rm -Rf ~/claude-skills
-git clone https://github.com/crystalloide/CassandraIA.git ~/claude-skills
+sudo rm -Rf ~/kafka-mongodb-postgresql
+git clone https://github.com/crystalloide/kafka-mongodb-postgresql.git 
 ```
