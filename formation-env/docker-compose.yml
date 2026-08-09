@@ -1,3 +1,5 @@
+version: "3.8"
+
 x-kafka-common: &kafka-common
   build:
     context: ./kafka
@@ -197,10 +199,10 @@ services:
 
   # -------------------------------------------------------------
   # Console JMX - Hawtio construite localement (jar officiel Maven
-  # Central io.hawt:hawtio-app). La propriété système
-  # "hawtio.proxyAllowlist=*" autorise la connexion Jolokia vers des
-  # hôtes distants (kafka1, kafka2, kafka3) : par défaut Hawtio ne
-  # whitelist que localhost/127.0.0.1 pour des raisons de sécurité.
+  # Central io.hawt:hawtio-app). "hawtio.proxyAllowlist=*" autorise
+  # la connexion Jolokia vers des hôtes distants (kafka1/2/3) : par
+  # défaut Hawtio ne whitelist que localhost pour des raisons de
+  # sécurité.
   # -------------------------------------------------------------
   hawtio:
     build:
@@ -219,9 +221,12 @@ services:
       - "8888:8080"
     environment:
       JAVA_TOOL_OPTIONS: "-Dhawtio.proxyAllowlist=* -Dhawtio.proxyWhitelist=*"
-    # Depuis l'UI Hawtio (http://localhost:8888/hawtio) : "Connect" ->
-    # Name: kafka1 / Scheme: http / Host: kafka1 / Port: 8778 / Path: /jolokia
+    # Connect -> Name: kafka1 / Scheme: http / Host: kafka1 / Port: 8778 / Path: /jolokia
 
+  # -------------------------------------------------------------
+  # Console Redpanda - la clé racine pour Kafka Connect s'appelle
+  # "kafkaConnect" (et non "connect") dans les versions récentes.
+  # -------------------------------------------------------------
   redpanda-console:
     image: docker.redpanda.com/redpandadata/console:latest
     container_name: redpanda-console
@@ -240,7 +245,7 @@ services:
       CONSOLE_CONFIG_FILE: |
         kafka:
           brokers: ["kafka1:19092", "kafka2:19092", "kafka3:19092"]
-        connect:
+        kafkaConnect:
           enabled: true
           clusters:
             - name: connect-postgres
