@@ -100,12 +100,12 @@ docker compose ps
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
-  --data @connect-source-postgres.json http://localhost:8083/connectors
+  --data @connect-configs/connect-source-postgres.json http://localhost:8083/connectors
 ```
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
-  --data @connect-sink-postgres.json http://localhost:8083/connectors
+  --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
 ```
 
 Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante
