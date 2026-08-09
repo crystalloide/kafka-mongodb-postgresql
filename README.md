@@ -90,9 +90,18 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
 ```bash
 docker compose build
 docker compose up -d
+```
+
+```bash
 docker compose ps
+```
+
+```bash
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-source-postgres.json http://localhost:8083/connectors
+```
+
+```bash
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-sink-postgres.json http://localhost:8083/connectors
 ```
