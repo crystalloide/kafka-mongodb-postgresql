@@ -23,7 +23,7 @@ git clone https://github.com/crystalloide/kafka-mongodb-postgresql.git
 ```
 
 ```bash
-cd /crystalloide/kafka-mongodb-postgresql/formation-env/
+cd ~/kafka-mongodb-postgresql/formation-env/
 ```
 
 # Environnement de formation Python — Kafka / PostgreSQL / MongoDB
