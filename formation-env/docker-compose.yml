@@ -1,0 +1,287 @@
+version: "3.8"
+
+# =====================================================================
+# Environnement de formation Python - Streaming & Data
+# Ubuntu 24.04 / Docker Compose
+#
+# Stack :
+#   - Kafka 3.8.1 en mode KRaft, 3 noeuds combinés broker+controller
+#   - Kafka Connect (source & sink) branché sur PostgreSQL
+#   - PostgreSQL 16 (SGBD-R utilisé par Kafka Connect)
+#   - MongoDB 7.0.7 (1 seul noeud, standalone)
+#   - Kafka UI (provectuslabs)
+#   - Console JMX (Hawtio + agent Jolokia embarqué dans les brokers)
+#   - Console Redpanda (redpandadata/console) pointée sur le cluster Kafka
+#
+# Cluster ID KRaft fixe pour que le cluster redémarre correctement
+# après un `docker compose down` (sans -v). Regénérer avec :
+#   docker run --rm confluentinc/cp-kafka:7.8.1 kafka-storage random-uuid
+# =====================================================================
+
+x-kafka-common: &kafka-common
+  build:
+    context: ./kafka
+    dockerfile: Dockerfile
+  image: formation/kafka-jolokia:7.8.1
+  restart: unless-stopped
+  networks:
+    - formation-net
+  environment: &kafka-common-env
+    CLUSTER_ID: "vSZzm591SZ2njloM9ETImg"
+    KAFKA_PROCESS_ROLES: "broker,controller"
+    KAFKA_CONTROLLER_QUORUM_VOTERS: "1@kafka1:9093,2@kafka2:9093,3@kafka3:9093"
+    KAFKA_CONTROLLER_LISTENER_NAMES: "CONTROLLER"
+    KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT"
+    KAFKA_INTER_BROKER_LISTENER_NAME: "PLAINTEXT"
+    KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+    KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 2
+    KAFKA_DEFAULT_REPLICATION_FACTOR: 3
+    KAFKA_MIN_INSYNC_REPLICAS: 2
+    KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+    KAFKA_JMX_PORT: 9999
+    # Agent Jolokia (HTTP/JSON sur JMX) exposé pour Hawtio - voir kafka/Dockerfile
+    KAFKA_OPTS: "-javaagent:/opt/jolokia/jolokia-jvm-agent.jar=port=8778,host=0.0.0.0"
+
+services:
+
+  # -------------------------------------------------------------
+  # Cluster Kafka 3.8.1 KRaft - 3 noeuds combinés broker+controller
+  # -------------------------------------------------------------
+  kafka1:
+    <<: *kafka-common
+    container_name: kafka1
+    hostname: kafka1
+    ports:
+      - "9092:9092"     # client externe
+      - "9101:9999"     # JMX RMI (jconsole/visualvm depuis l'hôte)
+      - "8778:8778"     # Jolokia HTTP (Hawtio)
+    environment:
+      <<: *kafka-common-env
+      KAFKA_NODE_ID: 1
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9092"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka1:19092,PLAINTEXT_HOST://localhost:9092"
+      KAFKA_JMX_HOSTNAME: "kafka1"
+    volumes:
+      - kafka1-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  kafka2:
+    <<: *kafka-common
+    container_name: kafka2
+    hostname: kafka2
+    ports:
+      - "9094:9094"
+      - "9102:9999"
+      - "8779:8778"
+    environment:
+      <<: *kafka-common-env
+      KAFKA_NODE_ID: 2
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9094"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka2:19092,PLAINTEXT_HOST://localhost:9094"
+      KAFKA_JMX_HOSTNAME: "kafka2"
+    volumes:
+      - kafka2-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  kafka3:
+    <<: *kafka-common
+    container_name: kafka3
+    hostname: kafka3
+    ports:
+      - "9096:9096"
+      - "9103:9999"
+      - "8780:8778"
+    environment:
+      <<: *kafka-common-env
+      KAFKA_NODE_ID: 3
+      KAFKA_LISTENERS: "PLAINTEXT://0.0.0.0:19092,CONTROLLER://0.0.0.0:9093,PLAINTEXT_HOST://0.0.0.0:9096"
+      KAFKA_ADVERTISED_LISTENERS: "PLAINTEXT://kafka3:19092,PLAINTEXT_HOST://localhost:9096"
+      KAFKA_JMX_HOSTNAME: "kafka3"
+    volumes:
+      - kafka3-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+
+  # -------------------------------------------------------------
+  # Kafka Connect - connecteur JDBC (source & sink) vers PostgreSQL
+  # -------------------------------------------------------------
+  kafka-connect:
+    build:
+      context: ./connect
+      dockerfile: Dockerfile
+    image: formation/kafka-connect-jdbc:7.8.1
+    container_name: kafka-connect
+    hostname: kafka-connect
+    restart: unless-stopped
+    depends_on:
+      kafka1:
+        condition: service_healthy
+      kafka2:
+        condition: service_healthy
+      kafka3:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - formation-net
+    ports:
+      - "8083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: "kafka1:19092,kafka2:19092,kafka3:19092"
+      CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+      CONNECT_REST_PORT: 8083
+      CONNECT_GROUP_ID: "formation-connect-cluster"
+      CONNECT_CONFIG_STORAGE_TOPIC: "_connect-configs"
+      CONNECT_OFFSET_STORAGE_TOPIC: "_connect-offsets"
+      CONNECT_STATUS_STORAGE_TOPIC: "_connect-status"
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 3
+      CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_KEY_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: "false"
+      CONNECT_INTERNAL_KEY_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_INTERNAL_VALUE_CONVERTER: "org.apache.kafka.connect.json.JsonConverter"
+      CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
+      CONNECT_LOG4J_ROOT_LOGLEVEL: "INFO"
+
+  # -------------------------------------------------------------
+  # PostgreSQL - SGBD-R utilisé par Kafka Connect (source + sink)
+  # -------------------------------------------------------------
+  postgres:
+    image: postgres:16
+    container_name: postgres
+    restart: unless-stopped
+    networks:
+      - formation-net
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: formation
+      POSTGRES_PASSWORD: formation
+      POSTGRES_DB: formation
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U formation -d formation"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # -------------------------------------------------------------
+  # MongoDB 7.0.7 - 1 seul noeud standalone
+  # -------------------------------------------------------------
+  mongodb:
+    image: mongo:7.0.7
+    container_name: mongodb
+    restart: unless-stopped
+    networks:
+      - formation-net
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: formation
+      MONGO_INITDB_ROOT_PASSWORD: formation
+      MONGO_INITDB_DATABASE: formation
+    volumes:
+      - mongo-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  # -------------------------------------------------------------
+  # Kafka UI - administration graphique du cluster + Connect
+  # -------------------------------------------------------------
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    container_name: kafka-ui
+    restart: unless-stopped
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - kafka-connect
+    networks:
+      - formation-net
+    ports:
+      - "8080:8080"
+    environment:
+      KAFKA_CLUSTERS_0_NAME: "formation-cluster"
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: "kafka1:19092,kafka2:19092,kafka3:19092"
+      KAFKA_CLUSTERS_0_METRICS_PORT: 9999
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: "connect-postgres"
+      KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://kafka-connect:8083"
+
+  # -------------------------------------------------------------
+  # Console JMX - Hawtio (via Jolokia embarqué dans les brokers)
+  # -------------------------------------------------------------
+  hawtio:
+    image: hawtio/hawtio:latest
+    container_name: hawtio
+    restart: unless-stopped
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+    networks:
+      - formation-net
+    ports:
+      - "8888:8080"
+    # Depuis l'UI Hawtio (http://localhost:8888) : "Connect" ->
+    # ajouter kafka1:8778, kafka2:8778, kafka3:8778 (path /jolokia)
+
+  # -------------------------------------------------------------
+  # Console Redpanda - UI alternative pointée sur le cluster Kafka
+  # -------------------------------------------------------------
+  redpanda-console:
+    image: docker.redpanda.com/redpandadata/console:latest
+    container_name: redpanda-console
+    restart: unless-stopped
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - kafka-connect
+    networks:
+      - formation-net
+    ports:
+      - "8090:8080"
+    environment:
+      CONFIG_FILEPATH: /tmp/config.yml
+      CONSOLE_CONFIG_FILE: |
+        kafka:
+          brokers: ["kafka1:19092", "kafka2:19092", "kafka3:19092"]
+        connect:
+          enabled: true
+          clusters:
+            - name: connect-postgres
+              url: http://kafka-connect:8083
+    command: -c "echo \"$$CONSOLE_CONFIG_FILE\" > /tmp/config.yml; /app/console"
+    entrypoint: /bin/sh
+
+networks:
+  formation-net:
+    driver: bridge
+
+volumes:
+  kafka1-data:
+  kafka2-data:
+  kafka3-data:
+  postgres-data:
+  mongo-data:
