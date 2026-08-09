@@ -41,7 +41,7 @@ formation-env/
     └── init.sql                # renommer postgres-init.sql
 ```
 
-Le build a besoin d'un accès Internet pour télécharger les images Confluent, l'agent Jolokia et le connecteur JDBC via `confluent-hub
+Le build a besoin d'un accès Internet pour télécharger les images Confluent, l'agent Jolokia et le connecteur JDBC via **confluent-hub**
 
 ## Choix techniques
 
