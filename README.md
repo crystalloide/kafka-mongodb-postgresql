@@ -103,6 +103,18 @@ curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-source-postgres.json http://localhost:8083/connectors
 ```
 
+Après l'exécution, vérifiez que le connecteur est bien actif :
+```bash
+curl http://localhost:8083/connectors
+curl http://localhost:8083/connectors/postgres-source-clients/status
+```
+
+Affichage en retour : 
+
+```text
+["postgres-source-clients","postgres-sink-clients"]{"name":"postgres-source-clients","connector":{"state":"RUNNING","worker_id":"kafka-connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"kafka-connect:8083"}],"type":"source"}
+```
+
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
