@@ -32,16 +32,16 @@ cd ~/kafka-mongodb-postgresql/formation-env/
 
 ```
 formation-env/
-├── docker-compose.yml          # renommer docker-compose.yml (fourni)
+├── docker-compose.yml         
 ├── kafka/
-│   └── Dockerfile              # renommer kafka-Dockerfile.txt
+│   └── Dockerfile            
 ├── connect/
-│   └── Dockerfile              # renommer connect-Dockerfile.txt
+│   └── Dockerfile             
 ├── connect-configs/
 │   └── connect-source-postgres.json
 │   └── connect-sink-postgres.json
 └── postgres/
-    └── init.sql                # renommer postgres-init.sql
+    └── init.sql                
 ```
 
 Le build a besoin d'un accès Internet pour télécharger les images Confluent, l'agent Jolokia et le connecteur JDBC via **confluent-hub**
