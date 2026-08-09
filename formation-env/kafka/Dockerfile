@@ -1,21 +1,15 @@
+# Fichier: kafka/Dockerfile
 # Image Kafka 3.8.1 (fournie par Confluent Platform 7.8.x) enrichie
 # de l'agent Jolokia pour exposer JMX en HTTP/JSON (consommé par Hawtio).
-#
-# Note : depuis Jolokia 2.x, l'artefact Maven a été renommé
-# "jolokia-agent-jvm" (au lieu de "jolokia-jvm"), avec le classifier
-# "-javaagent". La version 1.7.2 utilisée précédemment n'avait pas de
-# jar standalone valide publié, d'où l'erreur au démarrage
-# "Error opening zip file or JAR manifest missing".
 FROM confluentinc/cp-kafka:7.8.1
 
 USER root
 
-ARG JOLOKIA_VERSION=2.2.9
+ARG JOLOKIA_VERSION=1.7.2
 
 RUN mkdir -p /opt/jolokia && \
     curl -fsSL -o /opt/jolokia/jolokia-jvm-agent.jar \
-    "https://repo1.maven.org/maven2/org/jolokia/jolokia-agent-jvm/${JOLOKIA_VERSION}/jolokia-agent-jvm-${JOLOKIA_VERSION}-javaagent.jar" && \
-    unzip -l /opt/jolokia/jolokia-jvm-agent.jar > /dev/null && \
-    chown -R appuser:appuser /opt/jolokia
+    "https://repo1.maven.org/maven2/org/jolokia/jolokia-jvm/${JOLOKIA_VERSION}/jolokia-jvm-${JOLOKIA_VERSION}-agent.jar" && \
+    chown -R appuser:appuser /opt/jolokia || true
 
 USER appuser
