@@ -1,4 +1,3 @@
--- Fichier: postgres/init.sql
 -- Table de démonstration pour le connecteur JDBC source
 CREATE TABLE IF NOT EXISTS clients (
     id SERIAL PRIMARY KEY,

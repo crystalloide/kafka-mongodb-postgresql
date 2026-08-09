@@ -10,7 +10,7 @@ version: "3.8"
 #   - PostgreSQL 16 (SGBD-R utilisé par Kafka Connect)
 #   - MongoDB 7.0.7 (1 seul noeud, standalone)
 #   - Kafka UI (provectuslabs)
-#   - Console JMX (Hawtio construite localement + agent Jolokia dans les brokers)
+#   - Console JMX (Hawtio + agent Jolokia embarqué dans les brokers)
 #   - Console Redpanda (redpandadata/console) pointée sur le cluster Kafka
 #
 # Cluster ID KRaft fixe pour que le cluster redémarre correctement
@@ -68,8 +68,7 @@ services:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
       interval: 15s
       timeout: 10s
-      retries: 15
-      start_period: 60s
+      retries: 10
 
   kafka2:
     <<: *kafka-common
@@ -91,8 +90,7 @@ services:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
       interval: 15s
       timeout: 10s
-      retries: 15
-      start_period: 60s
+      retries: 10
 
   kafka3:
     <<: *kafka-common
@@ -114,8 +112,7 @@ services:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
       interval: 15s
       timeout: 10s
-      retries: 15
-      start_period: 60s
+      retries: 10
 
   # -------------------------------------------------------------
   # Kafka Connect - connecteur JDBC (source & sink) vers PostgreSQL
@@ -232,16 +229,10 @@ services:
       KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: "http://kafka-connect:8083"
 
   # -------------------------------------------------------------
-  # Console JMX - Hawtio construite localement (jar officiel Maven
-  # Central io.hawt:hawtio-app). Les images tierces "hawtio/hawtio"
-  # et "znio/hawtio" ont été retirées de Docker Hub, d'où ce choix
-  # plus pérenne : aucune dépendance à un repo Docker Hub non maintenu.
+  # Console JMX - Hawtio (via Jolokia embarqué dans les brokers)
   # -------------------------------------------------------------
   hawtio:
-    build:
-      context: ./hawtio
-      dockerfile: Dockerfile
-    image: formation/hawtio:2.17.7
+    image: hawtio/hawtio:latest
     container_name: hawtio
     restart: unless-stopped
     depends_on:
@@ -252,7 +243,7 @@ services:
       - formation-net
     ports:
       - "8888:8080"
-    # Depuis l'UI Hawtio (http://localhost:8888/hawtio) : "Connect" ->
+    # Depuis l'UI Hawtio (http://localhost:8888) : "Connect" ->
     # ajouter kafka1:8778, kafka2:8778, kafka3:8778 (path /jolokia)
 
   # -------------------------------------------------------------

@@ -68,8 +68,7 @@ services:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
       interval: 15s
       timeout: 10s
-      retries: 15
-      start_period: 60s
+      retries: 10
 
   kafka2:
     <<: *kafka-common
@@ -91,8 +90,7 @@ services:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
       interval: 15s
       timeout: 10s
-      retries: 15
-      start_period: 60s
+      retries: 10
 
   kafka3:
     <<: *kafka-common
@@ -114,8 +112,7 @@ services:
       test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:19092"]
       interval: 15s
       timeout: 10s
-      retries: 15
-      start_period: 60s
+      retries: 10
 
   # -------------------------------------------------------------
   # Kafka Connect - connecteur JDBC (source & sink) vers PostgreSQL
