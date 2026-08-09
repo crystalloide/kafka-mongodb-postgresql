@@ -23,12 +23,12 @@ git clone https://github.com/crystalloide/kafka-mongodb-postgresql.git
 ```
 
 ```bash
-cd /crystalloide/kafka-mongodb-postgresql
+cd /crystalloide/kafka-mongodb-postgresql/formation-env/
 ```
 
 # Environnement de formation Python — Kafka / PostgreSQL / MongoDB
 
-## Arborescence à créer
+## Arborescence :
 
 ```
 formation-env/
@@ -41,10 +41,7 @@ formation-env/
     └── init.sql                # renommer postgres-init.sql
 ```
 
-Les 4 fichiers proposés doivent être placés/renommés dans cette structure
-avant de lancer `docker compose build && docker compose up -d`
-(le build a besoin d'un accès Internet pour télécharger les images
-Confluent, l'agent Jolokia et le connecteur JDBC via `confluent-hub`).
+Le build a besoin d'un accès Internet pour télécharger les images Confluent, l'agent Jolokia et le connecteur JDBC via `confluent-hub
 
 ## Choix techniques
 
