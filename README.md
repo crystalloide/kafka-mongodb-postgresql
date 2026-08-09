@@ -147,6 +147,9 @@ curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
 
 ### Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
 
+https://github.com/crystalloide/kafka-mongodb-postgresql/tree/c95bb040bdb2ae141de947d253924344899287ea/formation-env
+
+
 ### Points d'attention pour la suite
 
 - Générer un nouveau `CLUSTER_ID` si vous dupliquez cet environnement pour
