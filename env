@@ -5,7 +5,7 @@
 KAFKA_BOOTSTRAP=localhost:9092,localhost:9093,localhost:9094
 
 # MongoDB - noeud unique
-MONGO_URI=mongodb://localhost:27017
+MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
 
 # Consoles de supervision / UI
 KAFKA_UI=http://localhost:8080
