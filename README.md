@@ -58,7 +58,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
   avec un `CLUSTER_ID` fixe pour la persistance entre redémarrages.
 - **Kafka Connect** : image `confluentinc/cp-kafka-connect:7.8.1` +
   connecteur **JDBC (source et sink)** installé via `confluent-hub`, qui
-  fonctionne nativement avec PostgreSQL sans driver additionnel[web:19].
+  fonctionne nativement avec PostgreSQL sans driver additionnel.
   Deux exemples de configuration sont fournis (`connect-source-postgres.json`,
   `connect-sink-postgres.json`) à poster sur `http://localhost:8083/connectors`.
 - **PostgreSQL 16** avec un script d'init créant une table `clients`
@@ -73,7 +73,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
   9101/9102/9103 (JMX RMI classique).
 - **Console Redpanda** (`redpandadata/console`) : totalement compatible
   protocole Kafka, elle fonctionne sans problème contre un cluster Kafka
-  standard[web:8][web:15], pointée ici sur les 3 brokers et sur Connect.
+  standard, pointée ici sur les 3 brokers et sur Connect.
 
 ### Accès aux interfaces
 
