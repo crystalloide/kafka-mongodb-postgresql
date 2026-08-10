@@ -24,10 +24,6 @@ Vérifiez ensuite :
 ```bash
 python --version
 ```
-- Créer un venv dédié :
-```bash
-python -m venv .venv && source .venv/bin/activate
-```
 - Fichier `requirements.txt` à créer
 ```bash
 vi requirements.txt
@@ -40,6 +36,29 @@ psycopg2-binary
 python-dotenv
 faker
 ```
+
+- Créer un venv dédié :
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+- Mettre à jour pip (évite des erreurs de résolution de dépendances) :
+```bash
+pip install --upgrade pip
+```
+
+- Installer les paquets :
+```bash
+pip install -r requirements.txt
+```
+
+- Vérifier l'installation :
+```bash
+pip list
+```
+
+Vous devez voir les 5 paquets avec leurs versions.
+
 
 - Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
 
