@@ -53,7 +53,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
 - **Kafka 3.8.1** : les images officielles Apache ne publient pas
   directement un tag `3.8.1` stable avec toutes les variables d'env
   pratiques ; j'utilise donc `confluentinc/cp-kafka:7.8.1`, qui embarque
-  exactement **Apache Kafka 3.8.1**[web:24][web:17]. 3 noeuds combinés
+  exactement **Apache Kafka 3.8.1**. 3 noeuds combinés
   `broker,controller` en mode KRaft (pas de rôle controller-only séparé),
   avec un `CLUSTER_ID` fixe pour la persistance entre redémarrages.
 - **Kafka Connect** : image `confluentinc/cp-kafka-connect:7.8.1` +
