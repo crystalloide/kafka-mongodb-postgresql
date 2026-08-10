@@ -143,12 +143,16 @@ Pour valider que le pipeline fonctionne réellement (Postgres → Kafka → Post
 docker exec -it kafka1 kafka-console-consumer --bootstrap-server localhost:19092 --topic pg-clients --from-beginning --max-messages 3
 ```
 
+Remarque : Le message "Could not start Jolokia agent: java.net.BindException: Address already in use" est à ignorer (déjà lancé et opérationnel)
+
 #### Vérifier que le connecteur sink a bien réinjecté les données dans la table clients_sink
 
 ```bash
 docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM clients_sink;"
-Si les 3 clients (Alice, Bruno, Chloé) apparaissent dans clients_sink, le pipeline JDBC source→sink fonctionne de bout en bout.
 ```
+
+##### Si les 3 clients (Alice, Bruno, Chloé) apparaissent dans clients_sink, le pipeline JDBC source→sink fonctionne de bout en bout.
+
 
 #### Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
 
