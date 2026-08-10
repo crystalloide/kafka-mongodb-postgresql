@@ -222,3 +222,60 @@ cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, 
   doivent être libres sur la machine Ubuntu 24.04.
 - Le sizing par défaut (heap JVM Kafka standard) convient pour un poste
   de formation ; ajustez `KAFKA_HEAP_OPTS` si RAM limitée.
+
+
+### Rappel de l'accès aux interfaces
+
+| Service            | URL                          |
+|---------------------|-------------------------------|
+| Kafka (client)       | `localhost:9092/9094/9096`   |
+| Kafka Connect REST   | `http://localhost:8083`      |
+| PostgreSQL           | `localhost:5432` (formation/formation) |
+| MongoDB              | `localhost:27017` (formation/formation) |
+| Kafka UI             | `http://localhost:8080`      |
+| Hawtio (JMX)         | `http://localhost:8888/hawtio`      |
+| Console Redpanda     | `http://localhost:8090`      |
+
+
+#### Exemple d'utilisation du nœud mongoDB 
+```bash
+docker exec -it mongodb mongosh -u formation -p formation --authenticationDatabase admin
+help
+show databases;
+use database_test
+show collections
+```
+
+#### Exemple d'utilisation du nœud mongoDB via une chaîne de connexion complète
+```bash
+docker exec -it mongodb mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
+```
+
+#### Exemple d'utilisation du nœud mongoDB depuis l'hôte (hors conteneur)
+
+Si mongosh est installé sur la machine Ubuntu directement :
+```bash
+mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
+```
+
+```javascript
+show databases
+use admin
+show users
+```
+
+
+#### Kafka UI     
+
+```bash
+http://localhost:8080
+```
+
+#### Console Redpanda   
+
+```bash
+http://localhost:8090
+```
+
+
+### Have Fun :-)
