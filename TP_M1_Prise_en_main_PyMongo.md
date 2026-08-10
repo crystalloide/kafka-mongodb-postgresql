@@ -32,7 +32,7 @@ environment:
 
 Dès qu'un `MONGO_INITDB_ROOT_USERNAME` est défini, MongoDB démarre avec l'**authentification activée**. Une connexion sans identifiants (`mongodb://localhost:27017`) échouera donc systématiquement.
 
-Créez un fichier `.env` à la racine du TP :
+Vérifier que le fichier `.env` à la racine du TP contient :
 
 ```
 MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
