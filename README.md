@@ -63,8 +63,7 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
   `connect-sink-postgres.json`) à poster sur `http://localhost:8083/connectors`.
 - **PostgreSQL 16** avec un script d'init créant une table `clients`
   (source) et une table `clients_sink` (cible du connecteur sink).
-- **MongoDB 7.0.7** en single-node standalone (pas de replica set,
-  conforme à votre demande d'un seul noeud).
+- **MongoDB 7.0.7** en single-node standalone (pas de replica set, un seul noeud).
 - **Kafka UI** (`provectuslabs/kafka-ui`) : vue cluster, topics, Connect,
   et métriques JMX (port 9999 des brokers).
 - **Console JMX** : le choix le plus robuste en environnement Docker est
