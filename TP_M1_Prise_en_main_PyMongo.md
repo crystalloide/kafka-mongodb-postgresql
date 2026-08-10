@@ -1,14 +1,37 @@
-# TP M1 — Prise en main & driver PyMongo
+## TP M1 — Prise en main & driver PyMongo
 
 **Durée** : 45 min
-**Prérequis** : MongoDB 7.0.7 démarré (Docker Compose), venv activé, `pymongo>=4.7,<5` et `faker` installés (`requirements.txt`).
+**Prérequis** : MongoDB 7.0.7 démarré (Docker Compose), venv activé, `pymongo>=4.7,<5`, `python-dotenv` et `faker` installés (`requirements.txt`), fichier `.env` créé (voir §0).
 
 ## Objectifs
 
-- Se connecter à MongoDB depuis Python avec `MongoClient`.
+- Se connecter à MongoDB depuis Python avec `MongoClient`, **avec authentification**.
 - Explorer bases et collections existantes.
 - Réaliser les opérations CRUD de base sur une collection.
 - Manipuler filtres, tri et pagination sur un jeu de données généré.
+
+---
+
+## 0. Configuration du `.env` (5 min)
+
+Le conteneur `mongodb` du `docker-compose.yml` est démarré avec :
+
+```yaml
+environment:
+  MONGO_INITDB_ROOT_USERNAME: formation
+  MONGO_INITDB_ROOT_PASSWORD: formation
+  MONGO_INITDB_DATABASE: formation
+```
+
+Dès qu'un `MONGO_INITDB_ROOT_USERNAME` est défini, MongoDB démarre avec l'**authentification activée**. Une connexion sans identifiants (`mongodb://localhost:27017`) échouera donc systématiquement.
+
+Créez un fichier `.env` à la racine du TP :
+
+```
+MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
+```
+
+**Point important** : `formation` est un *root user*, créé dans la base `admin` (c'est la base où MongoDB stocke les comptes root à la création). Il faut donc obligatoirement le paramètre `authSource=admin` dans l'URI — même si l'on travaille ensuite dans la base `training`. Sans ce paramètre, MongoDB tente d'authentifier l'utilisateur dans la base cible de l'URI (par défaut `admin` aussi si non précisée, mais le comportement diffère selon les versions du driver) et l'authentification échoue silencieusement côté logique métier, avec une erreur `OperationFailure`.
 
 ---
 
@@ -18,15 +41,28 @@ Créez un fichier `01_connexion.py` :
 
 ```python
 from pymongo import MongoClient
+from pymongo.errors import OperationFailure, ServerSelectionTimeoutError
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-client = MongoClient(os.getenv("MONGO_URI", "mongodb://localhost:27017"))
+MONGO_URI = os.getenv(
+    "MONGO_URI",
+    "mongodb://formation:formation@localhost:27017/?authSource=admin",
+)
 
-# Vérifier que le serveur répond
-print(client.admin.command("ping"))
+client = MongoClient(MONGO_URI)
+
+# Vérifier que le serveur répond ET que l'authentification est valide
+try:
+    print(client.admin.command("ping"))
+except ServerSelectionTimeoutError:
+    print("Connexion impossible : vérifiez host/port dans MONGO_URI.")
+    raise
+except OperationFailure:
+    print("Authentification refusée : vérifiez user/password/authSource dans MONGO_URI.")
+    raise
 
 # Lister les bases existantes
 print("Bases disponibles :", client.list_database_names())
@@ -39,7 +75,11 @@ print("Base sélectionnée :", db.name)
 
 **À observer** : tant qu'aucun document n'est inséré, `training` n'apparaîtra pas dans `list_database_names()`. C'est une particularité de MongoDB (création paresseuse des bases/collections).
 
-**Question** : que se passe-t-il si `MONGO_URI` pointe vers un port erroné ? Testez et observez le type d'exception levée (`pymongo.errors.ServerSelectionTimeoutError`).
+**Question** : que se passe-t-il si `MONGO_URI` pointe vers un port erroné (ex. `27018`) ? Testez et observez le type d'exception levée (`pymongo.errors.ServerSelectionTimeoutError`).
+
+**Question complémentaire** : que se passe-t-il si le port est correct mais le mot de passe est erroné ? Faites tester les deux cas aux stagiaires pour qu'ils distinguent bien :
+- `ServerSelectionTimeoutError` → problème réseau/host/port (le serveur n'a pas pu être atteint).
+- `OperationFailure` (`Authentication failed`) → serveur atteint, mais identifiants ou `authSource` incorrects.
 
 ---
 
@@ -193,7 +233,8 @@ print("Q5 - Rupture stock informatique :", products.count_documents({"category":
 - Rappeler que `find()` retourne un **curseur paresseux** (lazy) : les documents ne sont chargés qu'à l'itération. `count_documents()` est l'API moderne recommandée (remplace l'ancien `count()` déprécié).
 - La pagination par `skip/limit` est simple mais coûteuse sur de gros volumes (MongoDB doit parcourir les documents ignorés) : c'est l'occasion d'annoncer le TP M3 sur les index et la pagination par curseur (`range pagination` avec `_id` ou champ indexé).
 - Vérifier avec les stagiaires que l'index créé sur `price` (TP M3 anticipé) accélère bien la requête Q1/Q3 via `explain()`.
+- Insister sur `authSource=admin` : c'est l'erreur la plus fréquente en atelier (les stagiaires copient souvent un URI trouvé en ligne sans ce paramètre, ou omettent les identifiants).
 
 ## Livrable stagiaire attendu
 
-Un dossier `tp_m1/` contenant les 4 scripts (`01_connexion.py` à `04_requetes.py`) fonctionnels, exécutables depuis le venv du poste, avec les résultats imprimés en console pour chacune des 5 requêtes.
+Un dossier `tp_m1/` contenant `.env` (non versionné, basé sur `.env.example`) et les 4 scripts (`01_connexion.py` à `04_requetes.py`) fonctionnels, exécutables depuis le venv du poste, avec les résultats imprimés en console pour chacune des 5 requêtes.
