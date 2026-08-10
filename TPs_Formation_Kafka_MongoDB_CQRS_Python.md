@@ -24,6 +24,12 @@ Vérifiez ensuite :
 ```bash
 python --version
 ```
+
+- Créer un venv dédié :
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
 - Fichier `requirements.txt` à créer
 ```bash
 vi requirements.txt
@@ -35,11 +41,6 @@ pymongo>=4.7,<5
 psycopg2-binary
 python-dotenv
 faker
-```
-
-- Créer un venv dédié :
-```bash
-python -m venv .venv && source .venv/bin/activate
 ```
 
 - Mettre à jour pip (évite des erreurs de résolution de dépendances) :
