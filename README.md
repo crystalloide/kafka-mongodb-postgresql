@@ -71,8 +71,8 @@ Le build a besoin d'un accès Internet pour télécharger les images Confluent, 
   8778). Alternative : `jconsole`/VisualVM depuis l'hôte sur les ports
   9101/9102/9103 (JMX RMI classique).
 - **Console Redpanda** (`redpandadata/console`) : totalement compatible
-  protocole Kafka, elle fonctionne sans problème contre un cluster Kafka
-  standard, pointée ici sur les 3 brokers et sur Connect.
+  avec Kafka natif  KRAFT, fonctionne sans problème sur un cluster Kafka
+  standard 3 brokers et sur Connect.
 
 ### Accès aux interfaces
 
