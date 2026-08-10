@@ -11,19 +11,28 @@ Client Python : `kafka-python==2.3.1`, `pymongo` (≥4.7 recommandé pour MongoD
 
 Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer les TP techniques.
 
-- Vérifier `docker compose ps` : tous les conteneurs `Up (healthy)`.
-- Créer un venv dédié : `python -m venv .venv && source .venv/bin/activate`.
-- `requirements.txt` fourni aux stagiaires :
-  ```
-  kafka-python==2.3.1
-  pymongo>=4.7,<5
-  psycopg2-binary
-  python-dotenv
-  faker
-  ```
+- Vérifier que tous les conteneurs sont `Up (healthy)` :
+```bash
+docker compose ps
+```
+- Créer un venv dédié :
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+- Fichier `requirements.txt` à créer avec le contenu suivant :
+```bash
+kafka-python==2.3.1
+pymongo>=4.7,<5
+psycopg2-binary
+python-dotenv
+faker
+```bash
+
 - Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
+
 - Fichier `.env` avec les endpoints : `KAFKA_BOOTSTRAP=localhost:9092,localhost:9093,localhost:9094`, `MONGO_URI=mongodb://localhost:27017`, `KAFKA_UI=http://localhost:8080`, `HAWTIO=http://localhost:8081/hawtio`, `REDPANDA_CONSOLE=http://localhost:8082`.
-- Vérification rapide : script `check_env.py` qui teste la connexion Kafka (métadonnées cluster) et MongoDB (`ping`) et affiche un résumé OK/KO.
+
+- Vérification rapide avec script `check_env.py` qui teste la connexion Kafka (métadonnées cluster) et MongoDB (`ping`) et affiche un résumé OK/KO.
 
 ---
 
