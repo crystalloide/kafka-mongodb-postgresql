@@ -202,12 +202,19 @@ C'est une source d'erreur très fréquente en environnement de production.
 ```
 
 
-### Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
+#### Dans Hawtio, pour ajouter les connections vers nos 3 nœuds kafka : 
+
+Dans le navigateur web : 
+
+```text
+http://localhost:8888/hawtio/jvm/connect
+```
+cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
 
 <img width="732" height="473" alt="Add connection hawtio" src="https://github.com/user-attachments/assets/f5c8cd99-ad81-479f-841d-acf60379982b" />
 
 
-### Points d'attention pour la suite
+#### Points d'attention pour la suite
 
 - Générer un nouveau `CLUSTER_ID` si vous dupliquez cet environnement pour
   plusieurs postes (`kafka-storage random-uuid`).
