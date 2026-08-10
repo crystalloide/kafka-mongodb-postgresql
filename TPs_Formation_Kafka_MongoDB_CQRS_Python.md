@@ -28,14 +28,18 @@ python --version
 ```bash
 python -m venv .venv && source .venv/bin/activate
 ```
-- Fichier `requirements.txt` à créer avec le contenu suivant :
+- Fichier `requirements.txt` à créer
+```bash
+vi requirements.txt
+```
+- avec le contenu suivant :
 ```bash
 kafka-python==2.3.1
 pymongo>=4.7,<5
 psycopg2-binary
 python-dotenv
 faker
-```bash
+```
 
 - Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
 
