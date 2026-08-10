@@ -97,6 +97,8 @@ docker compose up -d
 docker compose ps
 ```
 
+Lancement du 1er Kafka Connect : Source : 
+
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-source-postgres.json http://localhost:8083/connectors
@@ -105,15 +107,21 @@ curl -X POST -H "Content-Type: application/json" \
 Après l'exécution, vérifiez que le connecteur est bien actif :
 ```bash
 curl http://localhost:8083/connectors
+```
+Affichage en retour : 
+```text
+["postgres-source-clients"]
+```
+
+```bash
 curl http://localhost:8083/connectors/postgres-source-clients/status
 ```
-
 Affichage en retour : 
-
 ```text
-["postgres-source-clients","postgres-sink-clients"]{"name":"postgres-source-clients","connector":{"state":"RUNNING","worker_id":"kafka-connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"kafka-connect:8083"}],"type":"source"}
+{"name":"postgres-source-clients","connector":{"state":"RUNNING","worker_id":"kafka-connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"kafka-connect:8083"}],"type":"source"}
 ```
 
+Lancement du 2er Kafka Connect : Sink cette fois : 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
