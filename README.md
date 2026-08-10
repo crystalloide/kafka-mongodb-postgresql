@@ -156,6 +156,46 @@ Si les 3 clients (Alice, Bruno, Chloé) apparaissent dans clients_sink, le pipel
 curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
 ```
 
+#### A savoir : le connecteur source garde son offset précédent (dernier id/timestamp lus) même après recréation, car Kafka Connect 3.8 stocke ces offsets dans un topic interne indépendant du topic de données, même s'il a été supprimé. 
+
+Si le connecteur source pense avoir déjà lu les lignes existantes, il n'en réémet aucune : ceci peut occasionner un topic vide et donc la table sink vide.
+
+Dans cette situation, le plus simple est de réinitialiser les offsets via l'API REST (Kafka Connect 3.8 supporte nativement cette opération) :
+
+
+##### 1. Arrêter le connecteur source (requis avant de reset ses offsets)
+```bash
+curl -X PUT http://localhost:8083/connectors/postgres-source-clients/stop
+```
+
+##### 2. Réinitialiser ses offsets
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-source-clients/offsets
+```
+
+##### 3. Redémarrer le connecteur
+```bash
+curl -X PUT http://localhost:8083/connectors/postgres-source-clients/resume
+```
+
+##### Vérification :
+```bash
+docker exec -it kafka1 kafka-console-consumer --bootstrap-server localhost:19092 --topic pg-clients --from-beginning --max-messages 3
+```
+
+On voit les 3 messages réapparaître (avec l'enveloppe schema/payload).
+
+Le connecteur sink, déjà RUNNING, les consommera automatiquement dès qu'ils arrivent dans le topic.
+
+```bash
+docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM clients_sink;"
+```
+
+#### A retenir donc : 
+```text
+les offsets de connecteurs source sont indépendants du contenu du topic Kafka : supprimer/recréer un topic ne suffit jamais à "repartir de zéro", il faut explicitement gérer les offsets stockés côté Connect. 
+C'est une source d'erreur très fréquente en environnement de production.
+```
 
 
 ### Dans Hawtio, cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, `kafka2:8778`, `kafka3:8778` (chemin `/jolokia`) pour visualiser les MBeans JMX de chaque broker.
