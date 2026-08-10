@@ -58,7 +58,18 @@ pip list
 ```
 
 Vous devez voir les 5 paquets avec leurs versions.
+```text
+Package         Version
+--------------- -------
+dnspython       2.8.0
+Faker           40.36.0
+kafka-python    2.3.1
+pip             26.2.1
+psycopg2-binary 2.9.12
+pymongo         4.17.0
+python-dotenv   1.2.2
 
+```
 
 - Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
 
