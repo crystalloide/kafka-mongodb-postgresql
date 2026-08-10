@@ -15,6 +15,15 @@ Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer le
 ```bash
 docker compose ps
 ```
+- Installation python :
+```bash
+sudo apt update
+sudo apt install python-is-python3
+```
+Vérifiez ensuite :
+```bash
+python --version
+```
 - Créer un venv dédié :
 ```bash
 python -m venv .venv && source .venv/bin/activate
