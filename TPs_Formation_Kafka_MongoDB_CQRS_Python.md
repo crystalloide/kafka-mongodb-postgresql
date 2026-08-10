@@ -1,4 +1,4 @@
-# Cahier des TPs — Formation Python / Kafka / MongoDB / CQRS (2 jours)
+### TPs Formation Python / Kafka / MongoDB / CQRS (2 jours)
 
 Environnement : Docker Compose sur Ubuntu 24.04, Kafka 3.8.1 (KRaft, 3 nœuds controller/broker), Kafka Connect (source/sink PostgreSQL 16), MongoDB 7.0.7 (1 nœud), Kafka UI, Hawtio (JMX), Redpanda Console.
 Client Python : `kafka-python==2.3.1`, `pymongo` (≥4.7 recommandé pour MongoDB 7.0), IDE : VS Code (extensions Python, Docker, MongoDB, YAML).
@@ -7,7 +7,7 @@ Client Python : `kafka-python==2.3.1`, `pymongo` (≥4.7 recommandé pour MongoD
 
 ---
 
-## 0. Préparation VS Code & environnement Python (30 min, transverse)
+###  0. Préparation VS Code & environnement Python (30 min, transverse)
 
 Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer les TP techniques.
 
@@ -27,7 +27,7 @@ Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer le
 
 ---
 
-## 1. Bloc MongoDB — 0,75 jour (≈ 3h de pratique)
+###  1. Bloc MongoDB — 0,75 jour (≈ 3h de pratique)
 
 ### TP M1 — Prise en main & driver PyMongo (45 min)
 - Connexion via `MongoClient`, exploration `list_database_names()`, création d'une base `training`.
@@ -52,7 +52,7 @@ Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer le
 
 ---
 
-## 2. Bloc Kafka — 0,75 jour (≈ 3h de pratique)
+###  2. Bloc Kafka — 0,75 jour (≈ 3h de pratique)
 
 ### TP K1 — Cluster KRaft, topics et CLI (30 min)
 - Découverte des 3 nœuds via **Kafka UI** (brokers, controllers, partitions, ISR).
@@ -76,7 +76,7 @@ Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer le
 
 ---
 
-## 3. Bloc CQRS — 0,5 jour (≈ 2h)
+###  3. Bloc CQRS — 0,5 jour (≈ 2h)
 
 ### Objectif applicatif
 Construire une mini-application illustrant le pattern CQRS : le **côté Commande** écrit les événements métier dans Kafka et persiste l'état transactionnel dans PostgreSQL (via Kafka Connect), tandis que le **côté Requête** consomme les événements Kafka pour construire une vue dénormalisée dans MongoDB, optimisée pour la lecture.
@@ -100,7 +100,7 @@ Construire une mini-application illustrant le pattern CQRS : le **côté Command
 
 ---
 
-## Répartition horaire indicative (jour 2, après 1 jour de théorie)
+###  Répartition horaire indicative (jour 2, après 1 jour de théorie)
 
 | Créneau | Contenu | Durée |
 |---|---|---|
@@ -108,7 +108,7 @@ Construire une mini-application illustrant le pattern CQRS : le **côté Command
 | Début après-midi | TP K1 → K4 (Kafka) | 3h |
 | Fin après-midi | TP C1 → C4 (CQRS) | 2h |
 
-## Livrables à préparer par le formateur
+###  Livrables à préparer par le formateur
 - Jeux de données `Faker` préchargés (clients, produits, commandes) pour éviter de perdre du temps en saisie manuelle.
 - Fichiers `docker-compose.override.yml` ou scripts `init` pour pré-créer les topics et la base PostgreSQL cible du connecteur sink.
 - Corrigés Python pour chaque TP (dossier `solutions/`) et README avec commandes de vérification rapide (`docker compose logs`, `curl localhost:8083/connectors`).
