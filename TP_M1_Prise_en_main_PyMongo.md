@@ -1,7 +1,14 @@
 ## TP M1 — Prise en main & driver PyMongo
 
 **Durée** : 45 min
-**Prérequis** : MongoDB 7.0.7 démarré (Docker Compose), venv activé, `pymongo>=4.7,<5`, `python-dotenv` et `faker` installés (`requirements.txt`), fichier `.env` créé (voir §0).
+
+**Prérequis** : 
+- MongoDB 7.0.7 démarré (Docker Compose)
+- venv activé
+- `pymongo>=4.7,<5`
+- `python-dotenv`
+- `faker` installés (`requirements.txt`)
+- fichier `.env` créé
 
 ## Objectifs
 
