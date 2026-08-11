@@ -40,6 +40,111 @@ MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
 
 **Point important** : `formation` est un *root user*, créé dans la base `admin` (c'est la base où MongoDB stocke les comptes root à la création). Il faut donc obligatoirement le paramètre `authSource=admin` dans l'URI — même si l'on travaille ensuite dans la base `training`. Sans ce paramètre, MongoDB tente d'authentifier l'utilisateur dans la base cible de l'URI (par défaut `admin` aussi si non précisée, mais le comportement diffère selon les versions du driver) et l'authentification échoue silencieusement côté logique métier, avec une erreur `OperationFailure`.
 
+
+### Pré-requis
+
+###  0. Préparation VS Code & environnement Python (30 min, transverse)
+
+Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer les TP techniques.
+
+- Vérifier que tous les conteneurs sont `Up (healthy)` :
+```bash
+docker compose ps
+```
+- Installation python :
+```bash
+sudo apt update
+sudo apt install python-is-python3
+```
+Vérifiez ensuite :
+```bash
+python --version
+```
+
+- Créer un venv dédié :
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+- Fichier `requirements.txt` à créer
+```bash
+vi requirements.txt
+```
+- avec le contenu suivant :
+```bash
+kafka-python==2.3.1
+pymongo>=4.7,<5
+psycopg2-binary
+python-dotenv
+faker
+```
+
+- Mettre à jour pip (évite des erreurs de résolution de dépendances) :
+```bash
+pip install --upgrade pip
+```
+
+- Installer les paquets :
+```bash
+pip install -r requirements.txt
+```
+
+- Vérifier l'installation :
+```bash
+pip list
+```
+
+Vous devez voir les 5 paquets avec leurs versions.
+```text
+Package         Version
+--------------- -------
+dnspython       2.8.0
+Faker           40.36.0
+kafka-python    2.3.1
+pip             26.2.1
+psycopg2-binary 2.9.12
+pymongo         4.17.0
+python-dotenv   1.2.2
+
+```
+
+- Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
+
+- Fichier `.env` avec les endpoints :
+```bash
+cp ~/kafka-mongodb-postgresql/formation-env/tp_m1/env .env
+cat .env
+```
+
+```text
+# Endpoints environnement de formation Kafka / MongoDB / CQRS
+# A charger avec python-dotenv (load_dotenv())
+
+# Kafka - cluster KRaft 3 noeuds (controller/broker)
+# Port host different par broker (listener PLAINTEXT_HOST) :
+# kafka1 -> 9092, kafka2 -> 9094, kafka3 -> 9096
+# (9093 est le port interne du listener CONTROLLER, jamais expose a l'hote)
+KAFKA_BOOTSTRAP=localhost:9092,localhost:9094,localhost:9096
+
+# MongoDB - noeud unique, utilisateur root cree via MONGO_INITDB_ROOT_USERNAME/PASSWORD
+MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
+
+# Consoles de supervision / UI
+KAFKA_UI=http://localhost:8080
+HAWTIO=http://localhost:8888/hawtio
+REDPANDA_CONSOLE=http://localhost:8090
+
+# Kafka Connect (REST API) - utile pour tester via Thunder Client
+KAFKA_CONNECT=http://localhost:8083
+```
+
+- Vérification rapide avec script `check_env.py` qui teste la connexion Kafka (métadonnées cluster) et MongoDB (`ping`) et affiche un résumé OK/KO.
+
+
+```bash
+python check_env.py
+```
+
 ---
 
 ## 1. Connexion et exploration (10 min)
