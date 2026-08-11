@@ -240,6 +240,8 @@ cliquer sur **Connect** puis ajouter une connexion distante vers `kafka1:8778`, 
 #### Exemple d'utilisation du nœud mongoDB 
 ```bash
 docker exec -it mongodb mongosh -u formation -p formation --authenticationDatabase admin
+```
+```bash
 help
 show databases;
 use database_test
