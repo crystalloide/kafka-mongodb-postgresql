@@ -95,8 +95,7 @@ ls
 ```
 
 ```bash
-cd tp_m1
-ls
+python 01_connexion.py
 ```
 
 ---
