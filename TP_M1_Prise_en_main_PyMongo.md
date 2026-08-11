@@ -49,7 +49,10 @@ Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer le
 
 - Vérifier que tous les conteneurs sont `Up (healthy)` :
 ```bash
-su - user 
+su - user
+```
+
+```bash
 cd ~/kafka-mongodb-postgresql/formation-env/
 ```
 
