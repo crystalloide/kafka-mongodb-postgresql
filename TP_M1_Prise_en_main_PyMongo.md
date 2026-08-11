@@ -49,8 +49,13 @@ Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer le
 
 - Vérifier que tous les conteneurs sont `Up (healthy)` :
 ```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
 docker compose ps
 ```
+
 - Installation python :
 ```bash
 sudo apt update
