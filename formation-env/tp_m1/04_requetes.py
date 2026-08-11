@@ -1,10 +1,19 @@
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from dotenv import load_dotenv
 import os
+import sys
 
 load_dotenv()
-client = MongoClient(os.getenv("MONGO_URI"))
-products = client["training"]["products"]
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier tp_m1/ (à côté de ce script) et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+products = MongoClient(MONGO_URI)["training"]["products"]
 
 # 1. Produits dont le prix est compris entre 50 et 150 euros
 q1 = products.find({"price": {"$gte": 50, "$lte": 150}})

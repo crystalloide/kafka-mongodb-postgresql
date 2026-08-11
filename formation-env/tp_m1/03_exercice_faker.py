@@ -3,9 +3,19 @@ from dotenv import load_dotenv
 from faker import Faker
 import os
 import random
+import sys
 
 load_dotenv()
-client = MongoClient(os.getenv("MONGO_URI"))
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier tp_m1/ (à côté de ce script) et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+client = MongoClient(MONGO_URI)
 db = client["training"]
 products = db["products"]
 
