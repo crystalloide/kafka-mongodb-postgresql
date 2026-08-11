@@ -108,9 +108,19 @@ Créez `02_crud.py` :
 from pymongo import MongoClient
 from dotenv import load_dotenv
 import os
+import sys
 
 load_dotenv()
-client = MongoClient(os.getenv("MONGO_URI"))
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier tp_m1/ (à côté de ce script) et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+client = MongoClient(MONGO_URI)
 db = client["training"]
 products = db["products"]
 
@@ -154,6 +164,7 @@ products.update_many(
 products.delete_many({"category": "mobilier"})
 
 print("Nombre de produits restants :", products.count_documents({}))
+
 ```
 
 ```bash
@@ -180,9 +191,19 @@ from dotenv import load_dotenv
 from faker import Faker
 import os
 import random
+import sys
 
 load_dotenv()
-client = MongoClient(os.getenv("MONGO_URI"))
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier tp_m1/ (à côté de ce script) et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+client = MongoClient(MONGO_URI)
 db = client["training"]
 products = db["products"]
 
@@ -208,6 +229,7 @@ print(f"{len(result.inserted_ids)} produits insérés.")
 
 products.create_index("name")
 products.create_index("price")
+
 ```
 
 ```bash
@@ -222,10 +244,19 @@ Complétez `04_requetes.py` avec les 5 requêtes suivantes (solutions fournies c
 from pymongo import MongoClient, ASCENDING, DESCENDING
 from dotenv import load_dotenv
 import os
+import sys
 
 load_dotenv()
-client = MongoClient(os.getenv("MONGO_URI"))
-products = client["training"]["products"]
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier tp_m1/ (à côté de ce script) et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+products = MongoClient(MONGO_URI)["training"]["products"]
 
 # 1. Produits dont le prix est compris entre 50 et 150 euros
 q1 = products.find({"price": {"$gte": 50, "$lte": 150}})
@@ -250,6 +281,7 @@ print(f"Q4 - Page {page} ({page_size} résultats/page) :", len(list(q4)))
 # 5. Produits en rupture de stock (stock = 0) d'une catégorie donnée, triés par prix croissant
 q5 = products.find({"category": "informatique", "stock": 0}).sort("price", ASCENDING)
 print("Q5 - Rupture stock informatique :", products.count_documents({"category": "informatique", "stock": 0}))
+
 ```
 
 ```bash
