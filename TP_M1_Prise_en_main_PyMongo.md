@@ -156,10 +156,15 @@ products.delete_many({"category": "mobilier"})
 print("Nombre de produits restants :", products.count_documents({}))
 ```
 
-**Points à commenter en formation** :
+```bash
+python 01_connexion.py
+```
+
+**Points à préciser :** :
 - `insert_one` retourne un `InsertOneResult` avec `inserted_id` (un `ObjectId` généré automatiquement si non fourni).
 - `update_one`/`update_many` nécessitent un opérateur (`$set`, `$inc`, `$unset`, etc.) — un update sans opérateur remplace **tout** le document.
 - `delete_many({})` supprimerait toute la collection : à manipuler avec précaution, bon moment pour parler de gouvernance/sécurité des opérations destructives.
+
 
 ---
 
