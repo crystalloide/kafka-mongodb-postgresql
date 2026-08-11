@@ -47,4 +47,7 @@ for p in resultats_q4:
 
 # 5. Produits en rupture de stock (stock = 0) d'une catégorie donnée, triés par prix croissant
 q5 = products.find({"category": "informatique", "stock": 0}).sort("price", ASCENDING)
-print("Q5 - Rupture stock informatique :", products.count_documents({"category": "informatique", "stock": 0}))
+resultats_q5 = list(q5)
+print(f"Q5 - Rupture stock informatique, {len(resultats_q5)} trouvé(s) :")
+for p in resultats_q5:
+    print(" -", p["name"], p["price"], "(stock:", p["stock"], ")")
