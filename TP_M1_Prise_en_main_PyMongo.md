@@ -394,10 +394,20 @@ for p in q3:
     print(" -", p["name"], p["price"])
 
 # 4. Pagination : page 3 avec 20 produits par page, triés par nom
+#    (tri secondaire sur _id pour un ordre déterministe en cas de noms
+#    identiques — sans ça, skip/limit n'est pas garanti stable)
 page = 3
 page_size = 20
-q4 = products.find().sort("name", ASCENDING).skip((page - 1) * page_size).limit(page_size)
-print(f"Q4 - Page {page} ({page_size} résultats/page) :", len(list(q4)))
+q4 = (
+    products.find()
+    .sort([("name", ASCENDING), ("_id", ASCENDING)])
+    .skip((page - 1) * page_size)
+    .limit(page_size)
+)
+resultats_q4 = list(q4)
+print(f"Q4 - Page {page} ({page_size} résultats/page), {len(resultats_q4)} trouvés :")
+for p in resultats_q4:
+    print(" -", p["name"], p["price"])
 
 # 5. Produits en rupture de stock (stock = 0) d'une catégorie donnée, triés par prix croissant
 q5 = products.find({"category": "informatique", "stock": 0}).sort("price", ASCENDING)
