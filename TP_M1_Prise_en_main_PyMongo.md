@@ -157,7 +157,7 @@ print("Nombre de produits restants :", products.count_documents({}))
 ```
 
 ```bash
-python 01_connexion.py
+python 02_crud.py
 ```
 
 **Points à préciser :** :
@@ -210,6 +210,10 @@ products.create_index("name")
 products.create_index("price")
 ```
 
+```bash
+python 03_exercice_faker.py
+```
+
 ### 3.2 Les 5 requêtes à écrire
 
 Complétez `04_requetes.py` avec les 5 requêtes suivantes (solutions fournies ci-dessous pour le corrigé formateur) :
@@ -246,6 +250,10 @@ print(f"Q4 - Page {page} ({page_size} résultats/page) :", len(list(q4)))
 # 5. Produits en rupture de stock (stock = 0) d'une catégorie donnée, triés par prix croissant
 q5 = products.find({"category": "informatique", "stock": 0}).sort("price", ASCENDING)
 print("Q5 - Rupture stock informatique :", products.count_documents({"category": "informatique", "stock": 0}))
+```
+
+```bash
+python 04_requetes.py
 ```
 
 ---
