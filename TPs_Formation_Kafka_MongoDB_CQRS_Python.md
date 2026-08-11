@@ -75,6 +75,11 @@ python-dotenv   1.2.2
 - Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
 
 - Fichier `.env` avec les endpoints :
+```bash
+cp ~/kafka-mongodb-postgresql/formation-env/tp_m1env .env
+cat .env
+```
+
 ```text
 # Endpoints environnement de formation Kafka / MongoDB / CQRS
 # A charger avec python-dotenv (load_dotenv())
