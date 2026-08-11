@@ -418,6 +418,6 @@ python 04_requetes.py
 - Vérifier avec les stagiaires que l'index créé sur `price` (TP M3 anticipé) accélère bien la requête Q1/Q3 via `explain()`.
 - Insister sur `authSource=admin` : c'est l'erreur la plus fréquente en atelier (les stagiaires copient souvent un URI trouvé en ligne sans ce paramètre, ou omettent les identifiants).
 
-## Livrable stagiaire attendu
+## Emplacement du TP n°1 sur MongoDB :
 
-Un dossier `tp_m1/` contenant `.env` (non versionné, basé sur `.env.example`) et les 4 scripts (`01_connexion.py` à `04_requetes.py`) fonctionnels, exécutables depuis le venv du poste, avec les résultats imprimés en console pour chacune des 5 requêtes.
+Le dossier `tp_m1/` contenant `.env` (non versionné, basé sur `.env.example`) et les 5 scripts (`01_connexion.py` à `05_reset_products.py`) fonctionnels, exécutables depuis le venv du poste, avec les résultats affichés à l'écran. 
