@@ -88,6 +88,17 @@ print("Base sélectionnée :", db.name)
 - `ServerSelectionTimeoutError` → problème réseau/host/port (le serveur n'a pas pu être atteint).
 - `OperationFailure` (`Authentication failed`) → serveur atteint, mais identifiants ou `authSource` incorrects.
 
+
+```bash
+cd tp_m1
+ls
+```
+
+```bash
+cd tp_m1
+ls
+```
+
 ---
 
 ## 2. CRUD de base sur `products` (20 min)
