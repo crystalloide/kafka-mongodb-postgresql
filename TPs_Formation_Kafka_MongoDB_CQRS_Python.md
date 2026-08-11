@@ -76,7 +76,7 @@ python-dotenv   1.2.2
 
 - Fichier `.env` avec les endpoints :
 ```bash
-cp ~/kafka-mongodb-postgresql/formation-env/tp_m1env .env
+cp ~/kafka-mongodb-postgresql/formation-env/tp_m1/env .env
 cat .env
 ```
 
