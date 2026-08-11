@@ -74,7 +74,28 @@ python-dotenv   1.2.2
 
 - Extensions VS Code : Python (Microsoft), Docker, MongoDB for VS Code, YAML, Thunder Client (pour tester Kafka Connect REST API).
 
-- Fichier `.env` avec les endpoints : `KAFKA_BOOTSTRAP=localhost:9092,localhost:9093,localhost:9094`, `MONGO_URI=mongodb://localhost:27017`, `KAFKA_UI=http://localhost:8080`, `HAWTIO=http://localhost:8081/hawtio`, `REDPANDA_CONSOLE=http://localhost:8082`.
+- Fichier `.env` avec les endpoints :
+```text
+# Endpoints environnement de formation Kafka / MongoDB / CQRS
+# A charger avec python-dotenv (load_dotenv())
+
+# Kafka - cluster KRaft 3 noeuds (controller/broker)
+# Port host different par broker (listener PLAINTEXT_HOST) :
+# kafka1 -> 9092, kafka2 -> 9094, kafka3 -> 9096
+# (9093 est le port interne du listener CONTROLLER, jamais expose a l'hote)
+KAFKA_BOOTSTRAP=localhost:9092,localhost:9094,localhost:9096
+
+# MongoDB - noeud unique, utilisateur root cree via MONGO_INITDB_ROOT_USERNAME/PASSWORD
+MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
+
+# Consoles de supervision / UI
+KAFKA_UI=http://localhost:8080
+HAWTIO=http://localhost:8888/hawtio
+REDPANDA_CONSOLE=http://localhost:8090
+
+# Kafka Connect (REST API) - utile pour tester via Thunder Client
+KAFKA_CONNECT=http://localhost:8083
+```
 
 - Vérification rapide avec script `check_env.py` qui teste la connexion Kafka (métadonnées cluster) et MongoDB (`ping`) et affiche un résumé OK/KO.
 
