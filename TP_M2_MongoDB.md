@@ -79,7 +79,7 @@ Dans MongoDB, il est possible de modéliser une commande de deux façons princip
 ## On se positionne dans le répertoire du TP 2 :
 
 ```bash
-cd tp_m2
+cd ~/kafka-mongodb-postgresql/formation-env/tp_m2
 ls
 ```
 
