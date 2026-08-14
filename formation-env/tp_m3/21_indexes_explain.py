@@ -17,37 +17,67 @@ client = MongoClient(MONGO_URI)
 db = client["training"]
 products = db["products"]
 
-print("Nombre de documents dans products :", products.count_documents({}))
-
-# Requête cible
 query = {"category": "informatique", "price": {"$gte": 50, "$lte": 150}}
 
-print("\nPlan d'exécution AVANT création d'index :")
-explain_before = products.find(query).explain()
-print("winningPlan.stage =", explain_before["queryPlanner"]["winningPlan"]["stage"])
+print("Nombre de documents dans products :", products.count_documents({}))
 
-# Index simple sur price
+# Reset des index (on garde uniquement _id_)
+print("\nReset des index de products (on garde uniquement _id_)...")
+for idx in products.list_indexes():
+    name = idx["name"]
+    if name != "_id_":
+        print(f" - drop_index('{name}')")
+        products.drop_index(name)
+
+print("\nIndex après reset :")
+for idx in products.list_indexes():
+    print(idx)
+
+
+def describe_plan(plan, label):
+    qp = plan.get("queryPlanner", {})
+    wp = qp.get("winningPlan", {})
+    es = plan.get("executionStats", {})
+
+    stage = wp.get("stage")
+    input_stage = wp.get("inputStage", {})
+    input_stage_name = input_stage.get("stage")
+    index_name = input_stage.get("indexName")
+
+    print(f"\n=== {label} ===")
+    print("winningPlan.stage       :", stage)
+    if input_stage_name:
+        print("winningPlan.inputStage  :", input_stage_name)
+    if index_name:
+        print("indexName               :", index_name)
+
+    if es:
+        print("nReturned               :", es.get("nReturned"))
+        print("totalDocsExamined       :", es.get("totalDocsExamined"))
+        print("totalKeysExamined       :", es.get("totalKeysExamined"))
+
+
+# 1. Plan AVANT tout index (hors _id_)
+explain_before = products.find(query).explain()
+describe_plan(explain_before, "AVANT index spécifique")
+
+
+# 2. Création d'un index simple sur price
 print("\nCréation d'un index simple sur 'price'...")
 products.create_index("price")
 
-print("Plan d'exécution APRES index simple sur price :")
 explain_after_price = products.find(query).explain()
-print("winningPlan.stage =", explain_after_price["queryPlanner"]["winningPlan"]["stage"])
+describe_plan(explain_after_price, "APRES index simple sur price")
 
-# Index composé sur (category, price)
+
+# 3. Création d'un index composé sur (category, price)
 print("\nCréation d'un index composé sur ('category', 'price')...")
 products.create_index([("category", ASCENDING), ("price", ASCENDING)])
 
-print("Plan d'exécution APRES index composé (category, price) :")
 explain_after_compound = products.find(query).explain()
-print("winningPlan.stage =", explain_after_compound["queryPlanner"]["winningPlan"]["stage"])
+describe_plan(explain_after_compound, "APRES index composé (category, price)")
 
-# Variante avec executionStats
-print("\nPlan d'exécution avec executionStats, APRES index composé :")
-explain_stats = products.find(query).explain("executionStats")
-print("nReturned      =", explain_stats["executionStats"]["nReturned"])
-print("totalDocsExamined =", explain_stats["executionStats"]["totalDocsExamined"])
 
-print("\nListe des index de la collection products :")
+print("\nIndex finaux de la collection products :")
 for idx in products.list_indexes():
     print(idx)
