@@ -76,6 +76,14 @@ Dans MongoDB, il est possible de modéliser une commande de deux façons princip
 
 ---
 
+## On se positionne dans le répertoire du TP 2 :
+
+```bash
+cd tp_m2
+ls
+```
+
+
 ## 1. Préparation des collections `customers` et `orders` (10 min)
 
 Objectif : créer un jeu de données réaliste avec des clients et des commandes, en utilisant Faker. Les commandes utiliseront le **modèle embarqué** avec un tableau `items`.
