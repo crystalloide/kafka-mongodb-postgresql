@@ -18,6 +18,13 @@
 
 ---
 
+## On se positionne dans le répertoire du TP : 
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_m2
+ls
+```
+
 ## 1. Rappel sur les index et `explain()` (10 min)
 
 Un index dans MongoDB est une structure de données qui permet de rechercher rapidement des documents selon la valeur d'un ou plusieurs champs.
