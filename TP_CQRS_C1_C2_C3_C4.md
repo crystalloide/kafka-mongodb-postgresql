@@ -93,7 +93,7 @@ ___
 
 - En cas de perte ou de changement de la vue, on peut rejouer les événements depuis Kafka (offset 0) pour reconstruire orders_view à partir du journal.
 
-#### Avantages : 
+### Avantages : 
 
 **- Modèles optimisés et séparés :**
   
@@ -116,7 +116,7 @@ Le code d’écriture reste focalisé sur les règles métier, la validation et 
 En gardant les événements dans Kafka, tu as un journal auditable et rejouable pour reconstruire des vues ou analyser l’historique des commandes.
 
 
-#### Inconvénients et limites : 
+### Inconvénients et limites : 
 
 - **Complexité accrue** :
   
