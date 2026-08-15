@@ -27,6 +27,13 @@ Avec PyMongo, on utilise la méthode `watch()` sur une collection, puis on itèr
 
 ---
 
+### On se positionne dans le répertoire du TP 4 : 
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_m3
+ls
+```
+
 ## 1. Consommateur — script `31_watch_orders_cs.py` (20 min)
 
 Objectif : ouvrir un change stream sur une collection `orders_cs` dans la base `training` et afficher les événements en temps réel.
