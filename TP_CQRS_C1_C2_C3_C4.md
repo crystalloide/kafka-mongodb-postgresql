@@ -95,23 +95,23 @@ ___
 
 #### Avantages : 
 
-- Modèles optimisés et séparés :
+**- Modèles optimisés et séparés :**
   
 Tu peux optimiser PostgreSQL pour les écritures transactionnelles (index, contraintes) et MongoDB pour les lectures rapides, dénormalisées, adaptées aux besoins métier.
 
-- Scalabilité indépendante :
+**- Scalabilité indépendante :**
   
 Le Command Side (écritures) et le Query Side (lectures) peuvent être scalés différemment : par exemple plusieurs réplicas de l’API de lecture et du projecteur si les lectures explosent, sans toucher au chemin d’écriture.
 
-- Simplification des lectures :
+**- Simplification des lectures :**
    
 Les APIs de lecture interrogent directement des vues déjà agrégées (sans gros JOINs ni logique métier), ce qui simplifie le code et améliore les latences.
 
-- Meilleure séparation de responsabilités :
+**- Meilleure séparation de responsabilités :**
   
 Le code d’écriture reste focalisé sur les règles métier, la validation et les invariants ; le code de lecture reste focalisé sur l’ergonomie de consultation et le reporting.
 
-- Replay / audit :
+**- Replay / audit :**
   
 En gardant les événements dans Kafka, tu as un journal auditable et rejouable pour reconstruire des vues ou analyser l’historique des commandes.
 
