@@ -77,19 +77,19 @@ ___
 
 ## 3. Fonctionnement, avantages, inconvénients :
 
-Fonctionnement synthétique :
+**Fonctionnement synthétique** :
 
-1°) Commandes (write model)
+**1°) Commandes (write model)**
 
 - L’API reçoit une intention métier (créer/annuler une commande), applique des règles (validation) et publie un événement décrivant ce qui s’est passé.
 - Kafka Connect sink persiste ces événements dans une base transactionnelle (orders dans PostgreSQL).
 
-2°) Requêtes (read model)
+**2°) Requêtes (read model)**
 
 - Un projecteur autonome consomme les mêmes événements et **maintient une vue de lecture** dans MongoDB sous une forme adaptée aux requêtes (orders_view).
 - L’API de lecture se contente de lire cette vue (queries simples, sans logique métier lourde ni transactions complexes).
 
-3°) Rejeu / reconstruction
+**3°) Rejeu / reconstruction**
 
 - En cas de perte ou de changement de la vue, on peut rejouer les événements depuis Kafka (offset 0) pour reconstruire orders_view à partir du journal.
 
