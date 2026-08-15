@@ -1,6 +1,6 @@
 ## CQRS — Mini‑application Command/Query
 
-### Présentation de CQRS : 
+## Présentation de CQRS : 
 
 CQRS est un pattern d’architecture qui sépare strictement les opérations d’écriture (commandes) des opérations de lecture (requêtes), chacune avec son propre modèle de données et parfois sa propre base.
 
