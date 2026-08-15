@@ -17,7 +17,7 @@
 
 ---
 
-## 0. Rappel des topics et de la configuration Kafka (5 min)
+## 00. Rappel des topics et de la configuration Kafka (5 min)
 
 Avant de commencer :
 
