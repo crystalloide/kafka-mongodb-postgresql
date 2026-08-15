@@ -30,16 +30,16 @@ Dans le TP, on peut résumer l’architecture CQRS ainsi :
 
 - **Command Side (écriture)**
 
-1°) API de commandes Python (command_api.py)
+#### 1°) API de commandes Python (command_api.py)
 
   - Endpoints POST /orders, POST /orders/{id}/cancel.
   - Valide la demande, construit des événements métier (OrderCreated, OrderCancelled) au format JSON.
 
-2°) Kafka — topic orders.events
+#### 2°) Kafka — topic orders.events
 
   - L’API publie les événements sur orders.events via KafkaProducer avec acks='all'.
 
-3°) Kafka Connect JDBC sink
+#### 3°) Kafka Connect JDBC sink
 
  - Consomme orders.events.
  - Insère les événements dans une table transactionnelle orders de PostgreSQL (source de vérité écriture).
@@ -47,12 +47,12 @@ Dans le TP, on peut résumer l’architecture CQRS ainsi :
 
 - **Query Side (lecture)**
 
-4°) Projecteur Python (projector.py)
+#### 4°) Projecteur Python (projector.py)
 
  - KafkaConsumer sur orders.events.
  - Pour chaque événement, met à jour (upsert) un document dans MongoDB (orders_view) : état dénormalisé par commande (client, statut, total, articles…).
 
-5°) API de lecture Python (query_api.py)
+#### 5°) API de lecture Python (query_api.py)
 
 - Endpoints GET /orders/{id}, GET /customers/{id}/orders.
 - Ne parle qu’à MongoDB et renvoie la vue orders_view (JSON) sans jamais appeler PostgreSQL.
