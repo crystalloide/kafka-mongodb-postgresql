@@ -245,6 +245,7 @@ Même si vous supprimez et recréez le topic `pg-clients`, le connecteur source 
 
 #### Cas d’école
 
+- Vous arrêtez le connecteur source
 - Vous supprimez le topic `pg-clients` et le recréez.
 - Vous recréez le connecteur source avec la même configuration.
 - Résultat : le topic peut rester vide, car le connecteur pense avoir déjà lu toutes les lignes de `clients`.
@@ -259,10 +260,34 @@ Pour forcer une relecture depuis le début :
 curl -X PUT http://localhost:8083/connectors/postgres-source-clients/stop
 ```
 
+```bash
+curl http://localhost:8083/connectors/postgres-source-clients/status
+```
+
+Statut : **STOPPED**
+
+
 2. Supprimer ses offsets :
 
 ```bash
 curl -X DELETE http://localhost:8083/connectors/postgres-source-clients/offsets
+```
+
+3. Supprimer le topic pg-clients :
+
+```bash
+docker exec -it kafka1 \
+  /usr/bin/kafka-topics \
+  --bootstrap-server kafka1:19092 \
+  --delete \
+  --topic pg-clients
+```
+
+```bash
+docker exec -it kafka1 \
+  /usr/bin/kafka-topics \
+  --bootstrap-server kafka1:19092 \
+  --list
 ```
 
 3. Redémarrer le connecteur :
