@@ -21,6 +21,7 @@ x-kafka-common: &kafka-common
     KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
     KAFKA_JMX_PORT: 9999
     KAFKA_OPTS: "-javaagent:/opt/jolokia/jolokia-jvm-agent.jar=port=8778,host=0.0.0.0"
+    KAFKA_DELETE_TOPIC_ENABLE: "true"
 
 services:
 
