@@ -123,11 +123,11 @@ Regardons la création via Kafka UI :
 
 1. Bouton **+ Add a Topic**. en haut à droite de l'écran
 2. Renseignez :
-   - `Topic name` : `orders.commands` ou `orders.events`.
-   - `Number of Partitions` : `3`.
+   - `Topic name` : `orders.commands` ou `orders.events`
+   - `Number of Partitions` : `3`
    - `Cleanup policy` : Delete
-   - `Min in Sync Replicas` : `2`.
-   - `Replication factor` : `3`.
+   - `Min in Sync Replicas` : `2`
+   - `Replication factor` : `3`
 
 ### 2.3 Vérification
 
