@@ -359,7 +359,7 @@ python 03_exercice_faker.py
 
 ### 3.2 Les 5 requêtes à écrire
 
-Complétez `04_requetes.py` avec les 5 requêtes suivantes (solutions fournies ci-dessous pour le corrigé formateur) :
+Créez `04_requetes.py` avec les 5 requêtes suivantes (solutions fournies ci-dessous pour le corrigé formateur) :
 
 ```python
 from pymongo import MongoClient, ASCENDING, DESCENDING
