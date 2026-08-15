@@ -290,13 +290,20 @@ docker exec -it kafka1 \
   --list
 ```
 
-3. Redémarrer le connecteur :
+4. Vérifiez la table `clients_sink` :
+
+```bash
+docker exec -it postgres psql -U formation -d formation \
+  -c "SELECT * FROM clients_sink;"
+```
+
+5. Redémarrer le connecteur :
 
 ```bash
 curl -X PUT http://localhost:8083/connectors/postgres-source-clients/resume
 ```
 
-4. Vérifier que les messages sont à nouveau produits dans `pg-clients` :
+6. Vérifier que les messages sont à nouveau produits dans `pg-clients` :
 
 Comptage du nombre de message (à faire seulement en formation)
 
@@ -310,6 +317,14 @@ docker exec -it kafka1 kafka-console-consumer \
 CTRL-C pour sortir
 
 Les messages réapparaissent, et le connecteur sink les consomme à nouveau pour remplir `clients_sink`.
+
+7. Vérifiez la table `clients_sink` :
+
+```bash
+docker exec -it postgres psql -U formation -d formation \
+  -c "SELECT * FROM clients_sink;"
+```
+
 
 ### Questions de réflexion
 
