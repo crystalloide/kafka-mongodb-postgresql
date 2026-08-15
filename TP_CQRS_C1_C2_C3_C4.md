@@ -28,7 +28,8 @@ Vue logique du Command Side et Query Side :
 
 Dans le TP, on peut résumer l’architecture CQRS ainsi :
 
-- **Command Side (écriture)**
+___
+### Command Side (écriture)
 
 #### 1°) API de commandes Python (command_api.py)
 
@@ -44,8 +45,8 @@ Dans le TP, on peut résumer l’architecture CQRS ainsi :
  - Consomme orders.events.
  - Insère les événements dans une table transactionnelle orders de PostgreSQL (source de vérité écriture).
 
-
-- **Query Side (lecture)**
+___
+### Query Side (lecture)
 
 #### 4°) Projecteur Python (projector.py)
 
@@ -56,8 +57,9 @@ Dans le TP, on peut résumer l’architecture CQRS ainsi :
 
 - Endpoints GET /orders/{id}, GET /customers/{id}/orders.
 - Ne parle qu’à MongoDB et renvoie la vue orders_view (JSON) sans jamais appeler PostgreSQL.
-
-- **Journal d’événements**
+  
+___
+### Journal d’événements
   
 Le topic orders.events est le flux d’événements métier qui permet :
  - d’alimenter PostgreSQL côté écriture (via Connect),
