@@ -119,6 +119,7 @@ Vous devez voir le message d'ouverture du change stream, puis le script se mettr
 
 ---
 
+
 ## 2. Producteur — script `32_producer_orders_cs.py` (20 min)
 
 Objectif : insérer et mettre à jour des documents dans `training.orders_cs` pour générer des événements consommés par le change stream.
@@ -207,6 +208,18 @@ except KeyboardInterrupt:
 ```
 
 Exécutez le script dans une deuxième console :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+```bash
+cd tp_m4
+```
 
 ```bash
 python 32_producer_orders_cs.py
