@@ -7,7 +7,9 @@
 - MongoDB 7.0.7 démarré en **réplica set** (obligatoire pour les change streams).
 - venv activé.
 - `pymongo>=4.7,<5`, `faker`, `python-dotenv` installés (`requirements.txt`).
-- fichier `.env` avec `MONGO_URI` configuré (même valeur que pour les TP précédents, incluant le `replicaSet` si nécessaire).
+- fichier `.env` avec `MONGO_URI` configuré
+
+- **Bien dérouler les instructions en pré-requis données dans le répertoire t4_M4**
 
 ## Objectifs
 
