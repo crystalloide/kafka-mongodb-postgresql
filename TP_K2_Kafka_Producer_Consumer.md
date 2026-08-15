@@ -47,12 +47,9 @@ python -m venv .venv && source .venv/bin/activate
 ```
 
 ```bash
-cd tp_m4
+cd tp_k2
 ```
 
-```bash
-python 32_producer_orders_cs.py
-```
 
 ## 1. Producteur — `KafkaProducer` avec JSON et `acks='all'` (20 min)
 
