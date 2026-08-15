@@ -116,7 +116,7 @@ Affichage en retour :
 ["postgres-source-clients"]
 ```
 
-Affichage de l'état des Kafka Connect :  
+Affichage de l'état du Kafka Connect Source :  
 
 ```bash
 curl http://localhost:8083/connectors/postgres-source-clients/status
@@ -126,11 +126,18 @@ Affichage en retour :
 {"name":"postgres-source-clients","connector":{"state":"RUNNING","worker_id":"kafka-connect:8083"},"tasks":[{"id":0,"state":"RUNNING","worker_id":"kafka-connect:8083"}],"type":"source"}
 ```
 
-##### Lancement du 2er Kafka Connect : Sink cette fois : 
+##### Lancement du 2nd Kafka Connect : Sink cette fois : 
 
 ```bash
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
+```
+
+Après l'exécution, vérifiez que les connecteurs sont bien actifs :
+
+Affichage de la liste des Kafka Connect :  
+```bash
+curl http://localhost:8083/connectors
 ```
 
 ### Test de bout en bout :
