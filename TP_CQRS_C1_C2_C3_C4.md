@@ -1,4 +1,155 @@
-## Bloc CQRS — Mini‑application Command/Query
+## CQRS — Mini‑application Command/Query
+
+### Présentation de CQRS : 
+
+CQRS est un pattern d’architecture qui sépare strictement les opérations d’écriture (commandes) des opérations de lecture (requêtes), chacune avec son propre modèle de données et parfois sa propre base.
+
+
+## 1. Synthèse de l’approche CQRS
+
+### Définition
+
+CQRS (Command Query Responsibility Segregation) consiste à utiliser un modèle pour les commandes qui modifient l’état (create/update/delete) et un modèle distinct pour les requêtes qui lisent l’état sans le modifier.
+
+### Principe clé
+
+Au lieu d’avoir un seul modèle/une seule base qui doit à la fois gérer la logique métier complexe et les requêtes de lecture, CQRS autorise :
+- un modèle d’écriture optimisé pour la cohérence, les règles métier, les transactions ;
+- un modèle de lecture optimisé pour la performance, la dénormalisation, les vues adaptées aux cas d’usage.
+
+  
+- **Conséquence importante** :
+Les données lues et les données écrites ne sont plus forcément dans la même structure ni dans la même base, et la lecture devient souvent éventuellement cohérente (il y a un délai entre l’écriture et la mise à jour des vues de lecture)
+
+
+## 2. Schéma de principe pour le TP CQRS (Kafka / PostgreSQL / MongoDB)
+
+Vue logique du Command Side et Query Side : 
+
+Dans le TP, on peut résumer l’architecture CQRS ainsi :
+
+- **Command Side (écriture)**
+
+1°) API de commandes Python (command_api.py)
+
+  - Endpoints POST /orders, POST /orders/{id}/cancel.
+  - Valide la demande, construit des événements métier (OrderCreated, OrderCancelled) au format JSON.
+
+2°) Kafka — topic orders.events
+
+  - L’API publie les événements sur orders.events via KafkaProducer avec acks='all'.
+
+3°) Kafka Connect JDBC sink
+
+ - Consomme orders.events.
+ - Insère les événements dans une table transactionnelle orders de PostgreSQL (source de vérité écriture).
+
+
+- **Query Side (lecture)**
+
+4°) Projecteur Python (projector.py)
+
+ - KafkaConsumer sur orders.events.
+ - Pour chaque événement, met à jour (upsert) un document dans MongoDB (orders_view) : état dénormalisé par commande (client, statut, total, articles…).
+
+5°) API de lecture Python (query_api.py)
+
+- Endpoints GET /orders/{id}, GET /customers/{id}/orders.
+- Ne parle qu’à MongoDB et renvoie la vue orders_view (JSON) sans jamais appeler PostgreSQL.
+
+- **Journal d’événements**
+  
+Le topic orders.events est le flux d’événements métier qui permet :
+ - d’alimenter PostgreSQL côté écriture (via Connect),
+ - de construire et reconstruire la vue MongoDB côté lecture (via le projecteur).
+
+___
+
+### L’ensemble est typiquement CQRS :
+- un modèle et une base pour l’écriture (PostgreSQL via Kafka Connect),
+- un modèle et une base pour la lecture (MongoDB dénormalisé),
+- et Kafka comme bus d’événements au centre.
+
+
+___
+
+## 3. Fonctionnement, avantages, inconvénients :
+
+Fonctionnement synthétique :
+
+1°) Commandes (write model)
+
+- L’API reçoit une intention métier (créer/annuler une commande), applique des règles (validation) et publie un événement décrivant ce qui s’est passé.
+- Kafka Connect sink persiste ces événements dans une base transactionnelle (orders dans PostgreSQL).
+
+2°) Requêtes (read model)
+
+- Un projecteur autonome consomme les mêmes événements et **maintient une vue de lecture** dans MongoDB sous une forme adaptée aux requêtes (orders_view).
+- L’API de lecture se contente de lire cette vue (queries simples, sans logique métier lourde ni transactions complexes).
+
+3°) Rejeu / reconstruction
+
+- En cas de perte ou de changement de la vue, on peut rejouer les événements depuis Kafka (offset 0) pour reconstruire orders_view à partir du journal.
+
+#### Avantages : 
+
+- Modèles optimisés et séparés :
+  
+Tu peux optimiser PostgreSQL pour les écritures transactionnelles (index, contraintes) et MongoDB pour les lectures rapides, dénormalisées, adaptées aux besoins métier.
+
+- Scalabilité indépendante :
+  
+Le Command Side (écritures) et le Query Side (lectures) peuvent être scalés différemment : par exemple plusieurs réplicas de l’API de lecture et du projecteur si les lectures explosent, sans toucher au chemin d’écriture.
+
+- Simplification des lectures :
+   
+Les APIs de lecture interrogent directement des vues déjà agrégées (sans gros JOINs ni logique métier), ce qui simplifie le code et améliore les latences.
+
+- Meilleure séparation de responsabilités :
+  
+Le code d’écriture reste focalisé sur les règles métier, la validation et les invariants ; le code de lecture reste focalisé sur l’ergonomie de consultation et le reporting.
+
+- Replay / audit :
+  
+En gardant les événements dans Kafka, tu as un journal auditable et rejouable pour reconstruire des vues ou analyser l’historique des commandes.
+
+
+#### Inconvénients et limites : 
+
+- **Complexité accrue** :
+  
+Il y a donc maintenant :
+- plusieurs modèles (write, read),
+- plusieurs bases (PostgreSQL, MongoDB),
+- des pipelines d’événements (Kafka, Connect, projecteur).
+- La conception, la supervision et le debugging sont plus complexes qu’un simple CRUD monolithique.
+
+- **Cohérence éventuelle** :
+  
+La vue MongoDB est mise à jour asynchrone depuis Kafka : une commande créée peut ne pas apparaître immédiatement dans GET /orders/{id} si le projecteur est en retard ou en panne. Il faut accepter une cohérence « eventual consistency ».
+
+- **Synchronisation / échecs distribués** :
+  
+Il faut gérer les cas où :
+- Kafka Connect est down,
+- le projecteur a du lag ou des erreurs,
+- des événements sont livrés en double ou en retard.
+  
+CQRS + événements introduisent de nouveaux modes de panne (offsets, replays, ordonnancement).
+
+- **Coût opérationnel** :
+  
+Plus de composants = plus de monitoring, de sauvegardes, de procédures de reprise, de formation des équipes. Pour une application simple, CQRS peut être surdimensionné.
+
+#### En résumé, l’architecture du TP illustre bien un CQRS pragmatique : 
+- Kafka comme journal d’événements,
+- PostgreSQL comme source de vérité écriture,
+- MongoDB comme vue de lecture dénormalisée,
+- deux APIs Python distinctes pour les commandes et les requêtes.
+
+Adapté à une formation sur des systèmes où le volume, la complexité métier ou les besoins de projection justifient la séparation.
+
+___
 
 **Durée totale** : ≈ 2 h (C1 → C4)
 
