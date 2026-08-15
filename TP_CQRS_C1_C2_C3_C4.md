@@ -1,4 +1,4 @@
-## CQRS - Mini‑application avec le pattern Command/Query
+## Mini‑application avec le pattern CQRS - Command/Query/Responsibility/Segregation
 
 ## Présentation de CQRS : 
 
