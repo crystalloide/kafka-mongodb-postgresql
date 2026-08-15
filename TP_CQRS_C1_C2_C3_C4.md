@@ -41,6 +41,22 @@ KAFKA_CONNECT=http://localhost:8083
 
 ---
 
+## 0. Nouveau terminal :
+
+Dans un nouveau terminal :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+```bash
+cd tp_cqrs
+```
+
 ## TP C1 — Conception de l’architecture (20 min, semi‑théorique)
 
 Objectif : poser la vision d’ensemble de la mini‑application CQRS avant de coder.
