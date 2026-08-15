@@ -77,6 +77,7 @@ Dans Thunder Client (VS Code) ou via curl, créez une requête **POST** :
 Exemple en ligne de commande :
 
 ```bash
+cd ~/kafka-mongodb-postgresql/formation-env
 curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-source-postgres.json http://localhost:8083/connectors
 ```
