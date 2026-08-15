@@ -125,7 +125,7 @@ Regardons la création via Kafka UI :
 2. Renseignez :
    - `Topic name` : `orders.commands` ou `orders.events`.
    - `Number of Partitions` : `3`.
-   - `Cleanup policy` : `Delete',
+   - `Cleanup policy` : `Delete`.
    - `Min in Sync Replicas` : `2`.
    - `Replication factor` : `3`.
 
