@@ -1,4 +1,4 @@
-## CQRS — Mini‑application Command/Query
+## CQRS - Mini‑application avec le pattern Command/Query
 
 ## Présentation de CQRS : 
 
