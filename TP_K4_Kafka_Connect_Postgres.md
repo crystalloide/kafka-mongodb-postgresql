@@ -139,12 +139,30 @@ Repérez :
 
 - `name`: `postgres-sink-clients`.
 - `connector.class`: `io.confluent.connect.jdbc.JdbcSinkConnector`.
+- `topics`: `pg-clients`. 
 - `connection.url`: même URL JDBC vers PostgreSQL.
-- `connection.user` / `connection.password`.
-- `topics`: `pg-clients`.
+- `connection.user`
+- `connection.password`.
+- `insert.mode`: `insert` (ou `upsert` selon le choix). 
 - `auto.create`: `true` ou `false` (création automatique de la table cible).
-- `insert.mode`: `insert` (ou `upsert` selon le choix).
 - `table.name.format`: `clients_sink`.
+
+- "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector"
+- "tasks.max": "1"
+- "topics": "pg-clients"
+- "connection.url": "jdbc:postgresql://postgres:5432/formation"
+- "connection.user": "formation"
+- "connection.password": "formation"
+- "insert.mode": "upsert"
+- "pk.mode": "record_value"
+- "pk.fields": "id"
+- "auto.create": "false"
+- "auto.evolve": "false"
+- "table.name.format": "clients_sink"
+- "key.converter": "org.apache.kafka.connect.json.JsonConverter"
+- "key.converter.schemas.enable": "true"
+- "value.converter": "org.apache.kafka.connect.json.JsonConverter"
+- "value.converter.schemas.enable": "true"
 
 Expliquez :
 
