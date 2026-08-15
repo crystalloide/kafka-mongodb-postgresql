@@ -121,7 +121,7 @@ docker exec -it kafka1 \
 
 Pour certains stagiaires, vous pouvez montrer la création via Kafka UI :
 
-1. Bouton **Create topic**.
+1. Bouton **+ Add a Topic**. en haut à droite de l'écran
 2. Renseignez :
    - `Topic name` : `orders.commands` ou `orders.events`.
    - `Partitions` : `3`.
