@@ -304,16 +304,7 @@ Comptage du nombre de message (à faire seulement en formation)
 docker exec -it kafka1 kafka-console-consumer \
   --bootstrap-server localhost:19092 \
   --topic pg-clients \
-  --from-beginning \
-  --timeout-ms 5000 \
-  | wc -l
-```
-
-```bash
-docker exec -it kafka1 kafka-console-consumer \
-  --bootstrap-server localhost:19092 \
-  --topic pg-clients \
-  --from-beginning \
+  --from-beginning 
 ```
 
 CTRL-C pour sortir
