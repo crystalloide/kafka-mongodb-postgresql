@@ -336,7 +336,7 @@ Si l'erreur suivante apparait "errmsg":"permissions on /etc/secrets/mongo-keyfil
 ```bash
 docker exec -it mongodb mongosh \
   -u formation -p formation --authenticationDatabase admin \
-  --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"mongodb:27017"}]})'
+  --eval 'rs.initiate({_id:"rs0",members:[{_id:0,host:"localhost:27017"}]})'
 ```
 
 ### Vérification de l'état du ReplicaSet  :
