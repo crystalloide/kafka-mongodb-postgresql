@@ -117,9 +117,9 @@ docker exec -it kafka1 \
   --config min.insync.replicas=2
 ```
 
-### 2.2 Variante via Kafka UI (optionnelle)
+### 2.2 Variante via Kafka UI (optionnel)
 
-Pour certains stagiaires, vous pouvez montrer la création via Kafka UI :
+Regardons la création via Kafka UI :
 
 1. Bouton **+ Add a Topic**. en haut à droite de l'écran
 2. Renseignez :
