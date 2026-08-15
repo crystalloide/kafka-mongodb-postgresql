@@ -58,11 +58,6 @@ docker exec -it kafka1 \
   --config min.insync.replicas=2
 ```
 
-- Noter la réserve sur la nomenclature (dans le nom des topics, on peut utiliser '.' ou '_' mais pas les deux) :
-```text
-WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
-```
-
 
 ### À expliquer
 
@@ -70,6 +65,10 @@ WARNING: Due to limitations in metric names, topics with a period ('.') or under
 - `min.insync.replicas=2` :
   - Pour un producteur configuré avec `acks=all`, l’écriture est considérée comme **réussie** uniquement si **au moins 2 répliques** (leader + 1 follower) confirment la réception.
   - Si moins de 2 ISR sont disponibles, le broker renvoie une erreur (ex. `NotEnoughReplicas`) et le producteur doit gérer ce cas.
+- Noter la réserve sur la nomenclature (dans le nom des topics, on peut utiliser '.' ou '_' mais pas les deux) :
+```text
+WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+```
 
 ### Vérification dans Kafka UI
 
