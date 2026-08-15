@@ -34,6 +34,26 @@ Ce TP utilisera le topic `orders.events` pour publier des événements de type `
 
 ---
 
+## 0. Nouveau terminal :
+
+Dans un nouveau terminal :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+```bash
+cd tp_m4
+```
+
+```bash
+python 32_producer_orders_cs.py
+```
+
 ## 1. Producteur — `KafkaProducer` avec JSON et `acks='all'` (20 min)
 
 Objectif : créer un producteur Python qui envoie des événements `OrderCreated` en JSON sur `orders.events` avec des garanties de durabilité fortes (`acks='all'`).
