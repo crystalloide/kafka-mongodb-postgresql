@@ -1,12 +1,4 @@
 """
-check_env.py
-Script de vérification rapide de l'environnement de formation
-Kafka (métadonnées cluster) + MongoDB (ping), avec gestion de
-l'authentification sur les deux services.
-
-Usage :
-    python check_env.py
-"""
 
 import os
 import sys
@@ -98,9 +90,12 @@ def check_mongo():
 
     # URI par défaut avec identifiants, alignée sur l'environnement de formation
     # (utilisateur "formation" créé sur la base admin).
-    mongo_uri = os.getenv(
-        "MONGO_URI",
-        "mongodb://formation:formation@localhost:27017/?authSource=admin",
+    mongo_uri = os.getenv("MONGO_URI")
+    if not mongo_uri:
+        sys.exit(
+            "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+            "dossier du projet et qu'il contient bien :\n"
+            "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin&replicaSet=rs0"
     )
 
     try:
