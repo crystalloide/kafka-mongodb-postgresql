@@ -30,7 +30,7 @@ Avec PyMongo, on utilise la méthode `watch()` sur une collection, puis on itèr
 ### On se positionne dans le répertoire du TP 4 : 
 
 ```bash
-cd ~/kafka-mongodb-postgresql/formation-env/tp_m3
+cd ~/kafka-mongodb-postgresql/formation-env/tp_m4
 ls
 ```
 
@@ -104,7 +104,6 @@ except PyMongoError as e:
 Exécutez le script dans une première console :
 
 ```bash
-cd tp_m4
 python 31_watch_orders_cs.py
 ```
 
@@ -208,7 +207,6 @@ except KeyboardInterrupt:
 Exécutez le script dans une deuxième console :
 
 ```bash
-cd tp_m4
 python 32_producer_orders_cs.py
 ```
 
