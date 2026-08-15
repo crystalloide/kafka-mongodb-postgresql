@@ -12,10 +12,6 @@
 - Découvrir le cluster Kafka en mode **KRaft** (3 nœuds broker/controller) via Kafka UI.
 - Créer un topic avec **facteur de réplication = 3** et comprendre l’impact de `min.insync.replicas` et `acks`.
 - Créer deux topics applicatifs `orders.commands` et `orders.events` avec 3 partitions chacun.
-- Noter la réserve sur la nomenclature (dans le nom des topics, on peut utiliser '.' ou '_' mais pas les deux) :
-```text
-WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
-```
 
 ---
 
@@ -61,6 +57,12 @@ docker exec -it kafka1 \
   --replication-factor 3 \
   --config min.insync.replicas=2
 ```
+
+- Noter la réserve sur la nomenclature (dans le nom des topics, on peut utiliser '.' ou '_' mais pas les deux) :
+```text
+WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.
+```
+
 
 ### À expliquer
 
