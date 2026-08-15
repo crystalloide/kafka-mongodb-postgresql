@@ -301,7 +301,19 @@ finally:
 python producer_orders.py
 ```
 
-2. Ouvrir une première console et lancer le premier consommateur avec listener :
+2. Ouvrir une nouvelle console et lancer le 1er consommateur avec listener :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+```bash
+cd tp_k2
+```
 
 ```bash
 python rebalance_consumer.py
@@ -309,7 +321,21 @@ python rebalance_consumer.py
 
    - Notez les partitions assignées (par exemple `[orders.events-0, orders.events-1, orders.events-2]`).
 
-3. Ouvrir une deuxième console et lancer une **seconde instance** de `rebalance_consumer.py` avec le même `group_id` :
+3. Ouvrir encore un autre terminal et lancer une **seconde instance** de `rebalance_consumer.py` avec le même `group_id` :
+
+Dans un nouveau terminal :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
+python -m venv .venv && source .venv/bin/activate
+```
+
+```bash
+cd tp_k2
+```
 
 ```bash
 python rebalance_consumer.py
@@ -318,7 +344,7 @@ python rebalance_consumer.py
    - Observez les logs `[REBALANCE]` dans les deux consoles : les partitions sont réparties entre les deux consommateurs.
    - Chaque consommateur ne reçoit qu’une **partie** des événements, en fonction de ses partitions.
 
-4. Arrêtez l’une des instances (Ctrl+C) :
+4. Arrêtez l’une des instances ( = Faire Ctrl+C dans un des 2 précédents terminaux) :
    - Observez un nouveau rebalancing : les partitions reviennent au consommateur restant.
 
 ### Points pédagogiques
