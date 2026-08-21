@@ -209,9 +209,12 @@ Or $multiply exige des opérandes numériques : on obtiendrait une erreur du typ
 et ce même si chaque commande n'a qu'une seule ligne (un tableau à un seul élément reste un tableau, MongoDB ne le "déballe" pas automatiquement).
 
 
-Pour mieux visualiser : 
+Pour mieux visualiser l'effet du "unwind" : 
 
-Ci-dessous les commandes à entrer dans le client mongosh, à coller directement dans le shell :
+Option 1 : sauvegarder dans un fichier unwind_demo.js 
+
+Commandes à entrer dans le client mongosh, à coller directement dans le shell :
+
 ```javascript
 mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
 ```
@@ -241,7 +244,34 @@ result.forEach((d, i) => {
 
 ```
 
-ou à sauvegarder dans un fichier unwind_demo.js à charger avec load()) :  
+Option 2 : sauvegarder dans un fichier unwind_demo.js 
+
+```javascript
+db = db.getSiblingDB("training");
+print(`Base de données active : ${db.getName()}`);
+
+// On prend une commande confirmée avec au moins 2 lignes (items.1 existe)
+const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } });
+
+print("=== AVANT $unwind : 1 document ===");
+printjson(doc);
+
+print(`\n=== APRÈS $unwind : ${doc.items.length} documents attendus ===`);
+const result = db.orders.aggregate([
+  { $match: { _id: doc._id } },
+  { $unwind: "$items" }
+]).toArray();
+
+print(`Nombre de documents obtenus : ${result.length}\n`);
+result.forEach((d, i) => {
+  print(`--- document ${i + 1} ---`);
+  printjson(d);
+});
+
+```
+
+Puis lancer : 
+
 ```javascript
 mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin" --file unwind_demo.js
 ```
@@ -351,8 +381,6 @@ Nombre de documents obtenus : 4
 }
 
 ```
-
-
 
 
 
