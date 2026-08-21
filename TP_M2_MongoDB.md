@@ -182,12 +182,15 @@ mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
 ```
 
 ```scriptMongosh
-use training
-db.customers.find().limit(10).pretty()
+use training;
 ```
 
 ```scriptMongosh
-db.orders.find().limit(10).pretty()
+db.customers.find().limit(5).pretty();
+```
+
+```scriptMongosh
+db.orders.find().limit(5).pretty();
 ```
 
 ---
