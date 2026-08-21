@@ -86,7 +86,9 @@ ls
 
 ## 1. Préparation des collections `customers` et `orders` (10 min)
 
-Objectif : créer un jeu de données réaliste avec des clients et des commandes, en utilisant Faker. Les commandes utiliseront le **modèle embarqué** avec un tableau `items`.
+Objectif : 
+- créer un jeu de données réaliste avec des clients et des commandes, en utilisant Faker. 
+- Les commandes utiliseront le **modèle embarqué** avec un tableau `items`.
 
 Créez le fichier `11_prepare_orders.py` :
 
