@@ -1,4 +1,4 @@
-## TP M2 — Modélisation de documents & agrégation - Réponse aux questions
+## TP M2 - Modélisation de documents & agrégation - Réponse aux questions
 
 ---
 ## I°) Questions posées : **0. Rappel - Modèle embarqué vs référencé**
