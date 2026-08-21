@@ -371,19 +371,68 @@ C'est exactement l'intérêt pédagogique de cette question : $unwind transforme
 
 Remarque annexe (pour aller plus loin avec les stagiaires) : on pourrait calculer un total par commande sans $unwind, mais il faudrait alors sommer le tableau explicitement, par exemple avec $sum sur un $map :
 
-```python
-"order_total": {
-    "$sum": {
-        "$map": {
-            "input": "$items",
-            "as": "it",
-            "in": {"$multiply": ["$$it.unit_price", "$$it.quantity"]}
+Dans le fichier total_commande_1_doc.js : 
+
+```javascript
+db = db.getSiblingDB("training");
+
+const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } });
+
+print("=== Total de la commande via $sum + $map (sans $unwind) ===");
+const result = db.orders.aggregate([
+  { $match: { _id: doc._id } },
+  {
+    $project: {
+      _id: 1,
+      items: 1,
+      order_total: {
+        $sum: {
+          $map: {
+            input: "$items",
+            as: "it",
+            in: { $multiply: ["$$it.unit_price", "$$it.quantity"] }
+          }
         }
+      }
     }
-}
+  }
+]).toArray();
+
+printjson(result[0]);
 ```
 
-Mais cela changerait la granularité du pipeline (un total par commande, pas par ligne), ce qui n'est pas ce qui est demandé.
+Pour le faire que la totalité des documents : 
+
+Dans le fichier total_commande_tous_les_doc.js : 
+
+```javascript
+db.orders.aggregate([
+  { $match: { status: "CONFIRMED" } },
+  {
+    $project: {
+      customer_id: 1,
+      order_date: 1,
+      order_total: {
+        $sum: {
+          $map: {
+            input: "$items",
+            as: "it",
+            in: { $multiply: ["$$it.unit_price", "$$it.quantity"] }
+          }
+        }
+      }
+    }
+  }
+]).forEach(printjson)
+```
+
+
+=> Cela changerait la granularité du pipeline (un total par commande, pas par ligne), ce qui n'est pas ce qui est demandé.
+
+Le pipeline renvoie une ligne par commande (order_total = total de toutes les lignes de la commande), alors que le pipeline avec $unwind renvoyait une ligne par article. 
+
+C'est exactement la différence de granularité mentionnée dans la remarque annexe : $map/$sum évite l'éclatement du document, mais on perd le détail ligne à ligne => donc inutilisable tel quel si l'objectif final est un $group par client/mois avec $unwind.
+
 
 
 #### 2. Comment filtrer uniquement les clients du segment `"gold"` dans ce pipeline ? 
