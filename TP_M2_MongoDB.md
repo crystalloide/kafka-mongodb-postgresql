@@ -21,7 +21,7 @@
 
 Dans MongoDB, il est possible de modéliser une commande de deux façons principales :
 
-1. **Modèle embarqué** : toutes les lignes de commande sont stockées dans un tableau `items` à l'intérieur du document `orders`.
+1. **Modèle embarqué** ou **embedded** : toutes les lignes de commande sont stockées dans un tableau `items` à l'intérieur du document `orders`.
 2. **Modèle référencé** : les lignes de commande sont stockées dans une collection séparée `order_lines`, qui référence la commande par une clé `order_id`.
 
 ### Exemple de modèle embarqué (collection `orders`)
