@@ -68,7 +68,10 @@ def describe_plan(plan, label):
 
 
 # 1. AVANT : aucun index adapté -> COLLSCAN attendu
-explain_before = products.find(query).explain("executionStats")
+# NB : Cursor.explain() (pymongo) ne prend pas d'argument de verbosité
+# comme dans mongosh — il s'exécute en "allPlansExecution", qui inclut
+# déjà les executionStats.
+explain_before = products.find(query).explain()
 describe_plan(explain_before, "AVANT index adapté")
 
 # 2. Création de l'index adapté à CETTE requête précise.
@@ -83,7 +86,7 @@ products.create_index([
 ])
 
 # 3. APRES : l'index doit être utilisé -> IXSCAN attendu
-explain_after = products.find(query).explain("executionStats")
+explain_after = products.find(query).explain()
 describe_plan(explain_after, "APRES index adapté (category, stock, price)")
 
 print("\nIndex finaux de la collection products :")
