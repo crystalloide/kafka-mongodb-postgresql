@@ -198,11 +198,9 @@ else:
 
 #### 1. Que se passe-t-il si l'on **supprime** l'étape `$unwind` du pipeline ? Les résultats sont-ils encore cohérents ?
 
-Suppression du $unwind
-
 Le pipeline échoue avec une erreur d'exécution, il ne produit pas simplement des résultats faux.
 
-Sans $unwind, **items** reste un tableau de sous-documents au moment du $group. Dans une expression d'agrégation, accéder à $items.unit_price sur un champ tableau ne renvoie pas une valeur scalaire mais un tableau de valeurs (une par élément d'items) — idem pour $items.quantity. 
+Sans `$unwind`, **items** reste un tableau de sous-documents au moment du $group. Dans une expression d'agrégation, accéder à $items.unit_price sur un champ tableau ne renvoie pas une valeur scalaire mais un tableau de valeurs (une par élément d'items) — idem pour $items.quantity. 
 
 Or $multiply exige des opérandes numériques : on obtiendrait une erreur du type
 
