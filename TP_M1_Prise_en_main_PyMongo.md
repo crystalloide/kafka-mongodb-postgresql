@@ -75,7 +75,7 @@ python --version
 python -m venv .venv && source .venv/bin/activate
 ```
 
-- Fichier `requirements.txt` à créer
+- Fichier `requirements.txt` à (re)créer si non présent/renseigné :
 ```bash
 vi requirements.txt
 ```
