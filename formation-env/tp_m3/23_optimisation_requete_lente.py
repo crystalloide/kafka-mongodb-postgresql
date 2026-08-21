@@ -59,6 +59,7 @@ def describe_plan(plan, label):
         print("totalKeysExamined       :", es.get("totalKeysExamined"))
         print("executionTimeMillis     :", es.get("executionTimeMillis"))
 
+print("\nRequête : ",query,"\n")
 
 # 1. AVANT : aucun index adapté -> COLLSCAN attendu
 # NB : Cursor.explain() (pymongo) ne prend pas d'argument de verbosité
