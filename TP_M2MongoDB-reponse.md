@@ -407,9 +407,7 @@ Puis lancer :
 mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin" --file total_commande_1_doc.js
 ```
 
-Pour le faire que la totalité des documents : 
-
-Dans le fichier total_commande_tous_les_doc.js : 
+Pour le faire maintenant sur la totalité des documents : 
 
 ```javascript
 mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin" 
@@ -455,28 +453,93 @@ L'Indice donné était d'ajouter un `$match` après le `$lookup` sur `customers`
 
 On insère un $match après le $unwind: "$customer", une fois que la jointure a été aplatie en un sous-document unique (plus simple à filtrer qu'un tableau) :
 
+Créer le fichier 14_ca_par_client_gold_mois.py
+
 ```python
-{
-    "$lookup": {
-        "from": "customers",
-        "localField": "_id.customer_id",
-        "foreignField": "_id",
-        "as": "customer",
-    }
-},
-{"$unwind": "$customer"},
-{"$match": {"customer.segment": "gold"}},   # <-- nouvelle étape
-{
-    "$project": {
-        "_id": 0,
-        "customer_id": "$_id.customer_id",
-        "customer_name": "$customer.full_name",
-        "year": "$_id.year",
-        "month": "$_id.month",
-        "revenue": 1,
-    }
-},
-{"$sort": {"year": 1, "month": 1, "customer_name": 1}},
+vi 14_ca_par_client_gold_mois.py
+```
+
+avec le contenu : 
+
+```python
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+import sys
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier du projet et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+client = MongoClient(MONGO_URI)
+db = client["training"]
+
+orders = db["orders"]
+
+pipeline = [
+    {"$match": {"status": "CONFIRMED"}},
+    {"$unwind": "$items"},
+    {
+        "$group": {
+            "_id": {
+                "customer_id": "$customer_id",
+                "year": {"$year": "$order_date"},
+                "month": {"$month": "$order_date"},
+            },
+            "revenue": {
+                "$sum": {
+                    "$multiply": ["$items.unit_price", "$items.quantity"]
+                }
+            },
+        }
+    },
+    {
+        "$lookup": {
+            "from": "customers",
+            "localField": "_id.customer_id",
+            "foreignField": "_id",
+            "as": "customer",
+        }
+    },
+    {"$unwind": "$customer"},
+    {"$match": {"customer.segment": "gold"}},  # <-- nouvelle étape
+    {
+        "$project": {
+            "_id": 0,
+            "customer_id": "$_id.customer_id",
+            "customer_name": "$customer.full_name",
+            "year": "$_id.year",
+            "month": "$_id.month",
+            "revenue": 1,
+        }
+    },
+    {"$sort": {"year": 1, "month": 1, "customer_name": 1}},
+]
+
+results = list(orders.aggregate(pipeline))
+
+if not results:
+    print("Aucun résultat : vérifiez qu'il existe des clients de segment 'gold' avec des commandes CONFIRMED.")
+else:
+    print(f"Nombre de lignes de CA client/mois (segment gold) : {len(results)}")
+    print("\nAperçu des 20 premières lignes :\n")
+    for doc in results[:20]:
+        print(
+            f"{doc['year']}-{doc['month']:02d} | "
+            f"{doc['customer_name']} | CA = {doc['revenue']:.2f} €"
+        )
+```
+
+Et l'exécuter : 
+
+```python
+python 14_ca_par_client_gold_mois.py
 ```
 
 **Remarque :**
@@ -524,6 +587,78 @@ pipeline = [
 ```
 
 Le $lookup/$unwind sur customers disparaît entièrement puisqu'on n'a plus besoin du nom du client. 
+
+
+Cela donne le script complet suivant : **15_ca_par_mois_sand_detail_client.py**
+
+```shell
+vi 15_ca_par_mois_sand_detail_client.py
+```
+
+```python
+from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
+import sys
+
+load_dotenv()
+
+MONGO_URI = os.getenv("MONGO_URI")
+if not MONGO_URI:
+    sys.exit(
+        "MONGO_URI introuvable. Vérifiez qu'un fichier .env existe dans le "
+        "dossier du projet et qu'il contient bien :\n"
+        "MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin"
+    )
+
+client = MongoClient(MONGO_URI)
+db = client["training"]
+
+orders = db["orders"]
+
+pipeline = [
+    {"$match": {"status": "CONFIRMED"}},
+    {"$unwind": "$items"},
+    {
+        "$group": {
+            "_id": {
+                "year": {"$year": "$order_date"},
+                "month": {"$month": "$order_date"},
+            },
+            "revenue": {
+                "$sum": {
+                    "$multiply": ["$items.unit_price", "$items.quantity"]
+                }
+            },
+        }
+    },
+    {
+        "$project": {
+            "_id": 0,
+            "year": "$_id.year",
+            "month": "$_id.month",
+            "revenue": 1,
+        }
+    },
+    {"$sort": {"year": 1, "month": 1}},
+]
+
+results = list(orders.aggregate(pipeline))
+
+if not results:
+    print("Aucun résultat : vérifiez que des commandes CONFIRMED existent dans la collection orders.")
+else:
+    print(f"Nombre de mois avec du CA : {len(results)}")
+    print("\nCA par mois :\n")
+    for doc in results:
+        print(f"{doc['year']}-{doc['month']:02d} | CA = {doc['revenue']:.2f} €")
+```
+
+Et l'exécuter : 
+
+```python
+python 15_ca_par_mois_sand_detail_client.py
+```
 
 **Remarque :** 
 
