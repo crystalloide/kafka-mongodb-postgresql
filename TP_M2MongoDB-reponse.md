@@ -16,7 +16,7 @@ Le modèle embarqué est optimal quand on retrouve le principe **« les données
 
 - **Relation 1-à-few bornée** : une commande a rarement plus de quelques dizaines de lignes ; le tableau `items` reste petit et loin de la limite BSON de 16 Mo par document.
 - **Lecture atomique** : une seule requête `find()` renvoie la commande complète avec ses lignes, sans `$lookup` ni round-trip supplémentaire.
-- **Atomicité des écritures** : MongoDB garantit l'atomicité au niveau du document — modifier une commande et ses lignes en une seule opération est naturel avec l'embarqué (ex. annuler une commande et recalculer son total).
+- **Atomicité des écritures** : MongoDB garantit l'atomicité au niveau du document : modifier une commande et ses lignes en une seule opération est naturel avec l'approche **embedded** (ex. annuler une commande et recalculer son total).
 - **Pas de réutilisation des sous-documents** : les `items` d'une commande n'ont de sens que dans le contexte de *cette* commande (un même libellé produit répété dans deux commandes n'est pas un problème puisqu'il n'y a pas de relation à maintenir entre les deux occurrences).
 
 C'est exactement le cas du TP : chaque commande a 1 à 5 items, jamais consultés indépendamment de leur commande.
