@@ -1,7 +1,7 @@
 ## TP M2 — Modélisation de documents & agrégation - Réponse aux questions
 
-
-### 1°) Questions posées : **0. Rappel - Modèle embarqué vs référencé**
+---
+## I°) Questions posées : **0. Rappel - Modèle embarqué vs référencé**
 
 - Dans quels cas le modèle embarqué est-il plus simple et plus performant ?
 - Quand le modèle référencé devient-il nécessaire (taille des documents, réutilisation des lignes de commande, besoins d'agrégation avancés) ?
@@ -59,7 +59,7 @@ Trois signaux typiques :
 ---
 
 
-### 2°) Question posées concernant le Pipeline d'agrégation (CA par client et par mois) 
+## II°) Question posées concernant le Pipeline d'agrégation (CA par client et par mois) 
 
 Objectif : calculer le **chiffre d'affaires** par client et par mois en se basant sur la collection `orders` (modèle embarqué), en ne prenant en compte que les commandes `status = "CONFIRMED"`.
 
