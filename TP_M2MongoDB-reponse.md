@@ -202,9 +202,11 @@ Suppression du $unwind
 
 Le pipeline échoue avec une erreur d'exécution, il ne produit pas simplement des résultats faux.
 
-Sans $unwind, **items** reste un tableau de sous-documents au moment du $group. Dans une expression d'agrégation, accéder à $items.unit_price sur un champ tableau ne renvoie pas une valeur scalaire mais un tableau de valeurs (une par élément d'items) — idem pour $items.quantity. Or $multiply exige des opérandes numériques : on obtiendrait une erreur du type
+Sans $unwind, **items** reste un tableau de sous-documents au moment du $group. Dans une expression d'agrégation, accéder à $items.unit_price sur un champ tableau ne renvoie pas une valeur scalaire mais un tableau de valeurs (une par élément d'items) — idem pour $items.quantity. 
 
-**$multiply only supports numeric types, not array**
+Or $multiply exige des opérandes numériques : on obtiendrait une erreur du type
+
+**pymongo.errors.OperationFailure: PlanExecutor error during aggregation :: caused by :: only numbers are allowed in an $multiply expression, full error: {'ok': 0.0, 'errmsg': 'PlanExecutor error during aggregation :: caused by :: only numbers are allowed in an $multiply expression', 'code': 7157721, 'codeName': 'Location7157721'}**
 
 et ce même si chaque commande n'a qu'une seule ligne (un tableau à un seul élément reste un tableau, MongoDB ne le "déballe" pas automatiquement).
 
