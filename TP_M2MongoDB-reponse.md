@@ -1,7 +1,7 @@
 ## TP M2 — Modélisation de documents & agrégation - Réponse aux questions
 
 
-### 1°) Questions posées : **0. Rappel — Modèle embarqué vs référencé**
+### 1°) Questions posées : **0. Rappel - Modèle embarqué vs référencé**
 
 - Dans quels cas le modèle embarqué est-il plus simple et plus performant ?
 - Quand le modèle référencé devient-il nécessaire (taille des documents, réutilisation des lignes de commande, besoins d'agrégation avancés) ?
