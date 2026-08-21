@@ -177,6 +177,19 @@ python 11_prepare_orders.py
 
 Vérifiez dans MongoDB (via MongoDB for VS Code ou `mongosh`) que les collections `customers` et `orders` ont été créées et contiennent des documents.
 
+```bash
+mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
+```
+
+```scriptMongosh
+use training
+db.customers.find().limit(10).pretty()
+```
+
+```scriptMongosh
+db.orders.find().limit(10).pretty()
+```
+
 ---
 
 ## 2. Pipeline d'agrégation — CA par client et par mois (25 min)
