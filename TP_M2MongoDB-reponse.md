@@ -28,7 +28,7 @@ C'est exactement le cas du TP : chaque commande a 1 à 5 items, jamais consulté
 Trois signaux typiques :
 
 - **Taille/croissance non bornée** : si le tableau peut grossir indéfiniment (ex. un panier qui accumule des événements sur des années, un historique de logs par commande), le risque de dépasser 16 Mo - ou simplement de dégrader les performances de lecture/écriture d'un document trop gros-, pousse vers une collection séparée.
-- **Réutilisation / partage** : si les « lignes » référencent une entité qui existe indépendamment et doit rester cohérente à plusieurs endroits (ex. un catalogue produit avec prix mis à jour de façon centralisée, référencé par des milliers de commandes), embarquer forcerait à dupliquer et à ne plus pouvoir mettre à jour un produit sans parcourir toutes les commandes qui le contiennent.
+- **Réutilisation / partage** : si les « lignes » référencent une entité qui existe indépendamment et doit rester cohérente à plusieurs endroits (ex. un catalogue produit avec des prix mis à jour de façon centralisée, référencé par des milliers de commandes), l'approche "embarquée" forcerait à dupliquer et à ne plus pouvoir mettre à jour un produit sans parcourir toutes les commandes qui le contiennent.
 - **Agrégations ou requêtes centrées sur les lignes elles-mêmes** : si on doit fréquemment interroger, indexer ou agréger les lignes indépendamment de leur commande parente (ex. « quelles sont les lignes avec la plus forte marge, toutes commandes confondues », mises à jour unitaires fréquentes d'une ligne sans toucher au reste de la commande), une collection `order_lines` dédiée, indexable indépendamment, devient plus efficace qu'un `$unwind` systématique.
 
 ---
