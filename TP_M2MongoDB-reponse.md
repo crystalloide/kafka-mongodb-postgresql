@@ -208,6 +208,150 @@ Or $multiply exige des opérandes numériques : on obtiendrait une erreur du typ
 
 et ce même si chaque commande n'a qu'une seule ligne (un tableau à un seul élément reste un tableau, MongoDB ne le "déballe" pas automatiquement).
 
+
+Pour mieux visualiser : 
+
+```javascript
+use training;
+
+// On prend une commande confirmée avec au moins 2 lignes (items.1 existe)
+const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } })
+
+print("=== AVANT $unwind : 1 document ===")
+printjson(doc)
+
+print(`\n=== APRÈS $unwind : ${doc.items.length} documents attendus ===`)
+const result = db.orders.aggregate([
+  { $match: { _id: doc._id } },
+  { $unwind: "$items" }
+]).toArray()
+
+print(`Nombre de documents obtenus : ${result.length}\n`)
+result.forEach((d, i) => {
+  print(`--- document ${i + 1} ---`)
+  printjson(d)
+})
+
+```
+
+Ci-dessus les commandes à entrer dans le client mongosh, à coller directement dans le shell
+
+ou à sauvegarder dans un fichier unwind_demo.js à charger avec load()) :  
+```javascript
+mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin" --file unwind_demo.js
+```
+
+Affichage en retour : 
+
+```Text
+
+use training;
+
+const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } })
+|
+| print("=== AVANT $unwind : 1 document ===")
+| printjson(doc)
+|
+| print(`\n=== APRÈS $unwind : ${doc.items.length} documents attendus ===`)
+| const result = db.orders.aggregate([
+|   { $match: { _id: doc._id } },
+|   { $unwind: "$items" }
+| ]).toArray()
+|
+| print(`Nombre de documents obtenus : ${result.length}\n`)
+| result.forEach((d, i) => {
+|   print(`--- document ${i + 1} ---`)
+|   printjson(d)
+| })
+=== AVANT $unwind : 1 document ===
+{
+  _id: ObjectId('6a88279b016a3bfada0bd72b'),
+  customer_id: ObjectId('6a88279b016a3bfada0bd711'),
+  order_date: ISODate('2026-01-02T07:18:00.736Z'),
+  status: 'CONFIRMED',
+  items: [
+    {
+      product_name: "L'art de concrétiser vos projets de manière efficace",
+      unit_price: 205.92,
+      quantity: 2
+    },
+    {
+      product_name: 'Le plaisir de louer plus facilement',
+      unit_price: 233.73,
+      quantity: 1
+    },
+    {
+      product_name: "L'art d'évoluer de manière efficace",
+      unit_price: 232.15,
+      quantity: 3
+    },
+    {
+      product_name: 'Le droit de rouler de manière sûre',
+      unit_price: 191.96,
+      quantity: 2
+    }
+  ]
+}
+
+=== APRÈS $unwind : 4 documents attendus ===
+Nombre de documents obtenus : 4
+
+--- document 1 ---
+{
+  _id: ObjectId('6a88279b016a3bfada0bd72b'),
+  customer_id: ObjectId('6a88279b016a3bfada0bd711'),
+  order_date: ISODate('2026-01-02T07:18:00.736Z'),
+  status: 'CONFIRMED',
+  items: {
+    product_name: "L'art de concrétiser vos projets de manière efficace",
+    unit_price: 205.92,
+    quantity: 2
+  }
+}
+--- document 2 ---
+{
+  _id: ObjectId('6a88279b016a3bfada0bd72b'),
+  customer_id: ObjectId('6a88279b016a3bfada0bd711'),
+  order_date: ISODate('2026-01-02T07:18:00.736Z'),
+  status: 'CONFIRMED',
+  items: {
+    product_name: 'Le plaisir de louer plus facilement',
+    unit_price: 233.73,
+    quantity: 1
+  }
+}
+--- document 3 ---
+{
+  _id: ObjectId('6a88279b016a3bfada0bd72b'),
+  customer_id: ObjectId('6a88279b016a3bfada0bd711'),
+  order_date: ISODate('2026-01-02T07:18:00.736Z'),
+  status: 'CONFIRMED',
+  items: {
+    product_name: "L'art d'évoluer de manière efficace",
+    unit_price: 232.15,
+    quantity: 3
+  }
+}
+--- document 4 ---
+{
+  _id: ObjectId('6a88279b016a3bfada0bd72b'),
+  customer_id: ObjectId('6a88279b016a3bfada0bd711'),
+  order_date: ISODate('2026-01-02T07:18:00.736Z'),
+  status: 'CONFIRMED',
+  items: {
+    product_name: 'Le droit de rouler de manière sûre',
+    unit_price: 191.96,
+    quantity: 2
+  }
+}
+
+```
+
+
+
+
+
+
 C'est exactement l'intérêt pédagogique de cette question : $unwind transforme chaque document commande (avec son tableau items) en autant de documents qu'il y a de lignes, chacun portant un items scalaire (objet unique, plus tableau). C'est ce qui rend $items.unit_price et $items.quantity accessibles comme des nombres simples pour $multiply. Sans cette étape, le modèle embarqué n'est pas "aplati" et le calcul ligne à ligne est impossible tel quel.
 
 Remarque annexe (pour aller plus loin avec les stagiaires) : on pourrait calculer un total par commande sans $unwind, mais il faudrait alors sommer le tableau explicitement, par exemple avec $sum sur un $map :
