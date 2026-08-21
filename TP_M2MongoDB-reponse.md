@@ -218,7 +218,9 @@ mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
 
 ```javascript
 use training;
+```
 
+```javascript
 // On prend une commande confirmée avec au moins 2 lignes (items.1 existe)
 const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } })
 
