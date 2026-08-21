@@ -217,7 +217,7 @@ mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
 ```
 
 ```javascript
-use training;
+use training
 ```
 
 ```javascript
@@ -250,7 +250,7 @@ Affichage en retour :
 
 ```Text
 
-use training;
+use training
 
 const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } })
 |
