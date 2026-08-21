@@ -3,6 +3,8 @@
 
 1°) Lancer Ubuntu sur la machine windows (Ubuntu 24.4.1 dans cet exemple) 
 ```bash
+cd ~
+cd kafka-mongodb-postgresql/
 lsb_release -cs
 ```
 On obtient soit `jammy` (Ubuntu 22.04) soit `noble` (Ubuntu 24.04) => nom de code qu'il faudra utiliser dans le dépôt APT 
@@ -29,6 +31,7 @@ echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gp
 
 ```bash
 cd ~
+cd kafka-mongodb-postgresql/
 sudo apt update
 # Ceci installe uniquement le shell (pas le serveur mongod complet), ce qui suffit pour se connecter à une instance distante ou à un conteneur Docker.
 sudo apt install -y mongodb-mongosh
