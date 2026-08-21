@@ -1,11 +1,60 @@
 ## TP M2 — Modélisation de documents & agrégation - Réponse aux questions
 
 
-### 1°) Questions posées :
+### 1°) Questions posées : TP M2 (modélisation de documents & agrégation) **Section concernée** : 0. Rappel — Modèle embarqué vs référencé
 
 - Dans quels cas le modèle embarqué est-il plus simple et plus performant ?
 - Quand le modèle référencé devient-il nécessaire (taille des documents, réutilisation des lignes de commande, besoins d'agrégation avancés) ?
 - Quel modèle est le plus adapté à une vue de lecture CQRS où l'on veut répondre rapidement à des requêtes comme « commandes d'un client sur une période » ?
+
+
+---
+
+#### 1. Dans quels cas le modèle embarqué est-il plus simple et plus performant ?
+
+Le modèle embarqué est optimal quand on retrouve le principe **« les données consultées ensemble doivent être stockées ensemble »** :
+
+- **Relation 1-à-few bornée** : une commande a rarement plus de quelques dizaines de lignes ; le tableau `items` reste petit et loin de la limite BSON de 16 Mo par document.
+- **Lecture atomique** : une seule requête `find()` renvoie la commande complète avec ses lignes, sans `$lookup` ni round-trip supplémentaire.
+- **Atomicité des écritures** : MongoDB garantit l'atomicité au niveau du document — modifier une commande et ses lignes en une seule opération est naturel avec l'embarqué (ex. annuler une commande et recalculer son total).
+- **Pas de réutilisation des sous-documents** : les `items` d'une commande n'ont de sens que dans le contexte de *cette* commande (un même libellé produit répété dans deux commandes n'est pas un problème puisqu'il n'y a pas de relation à maintenir entre les deux occurrences).
+
+C'est exactement le cas du TP : chaque commande a 1 à 5 items, jamais consultés indépendamment de leur commande.
+
+---
+
+#### 2. Quand le modèle référencé devient-il nécessaire ?
+
+Trois signaux typiques :
+
+- **Taille/croissance non bornée** : si le tableau peut grossir indéfiniment (ex. un panier qui accumule des événements sur des années, un historique de logs par commande), le risque de dépasser 16 Mo — ou simplement de dégrader les performances de lecture/écriture d'un document trop gros — pousse vers une collection séparée.
+- **Réutilisation / partage** : si les « lignes » référencent une entité qui existe indépendamment et doit rester cohérente à plusieurs endroits (ex. un catalogue produit avec prix mis à jour centralement, référencé par des milliers de commandes), embarquer forcerait à dupliquer et à ne plus pouvoir mettre à jour un produit sans parcourir toutes les commandes qui le contiennent.
+- **Agrégations ou requêtes centrées sur les lignes elles-mêmes** : si on doit fréquemment interroger, indexer ou agréger les lignes indépendamment de leur commande parente (ex. « quelles sont les lignes avec la plus forte marge, toutes commandes confondues », mises à jour unitaires fréquentes d'une ligne sans toucher au reste de la commande), une collection `order_lines` dédiée, indexable indépendamment, devient plus efficace qu'un `$unwind` systématique.
+
+---
+
+#### 3. Quel modèle pour une vue de lecture CQRS « commandes d'un client sur une période » ?
+
+**Le modèle embarqué est le plus adapté ici**, et c'est un bon point de bascule pédagogique vers la partie CQRS de la formation :
+
+- Le besoin exprimé est une lecture **dénormalisée et rapide**, exactement ce que vise une vue de lecture CQRS : on veut restituer une commande complète (items compris) sans jointure au moment de la requête.
+- Avec le modèle embarqué, `db.orders.find({customer_id, order_date: {$gte: ..., $lte: ...}})` (avec un index composé `{customer_id: 1, order_date: -1}`) suffit à répondre en une seule opération.
+- Avec le modèle référencé, il faudrait soit un `$lookup` (coûteux à grande échelle, comme le souligne la synthèse du TP), soit deux requêtes applicatives — ce qui va à l'encontre de l'objectif de latence faible d'une vue de lecture.
+
+**Point clé à faire ressortir avec les stagiaires** : le modèle de la vue de lecture n'a pas à être le même que celui du modèle d'écriture/domaine. En CQRS, on peut très bien avoir un modèle référencé côté « source de vérité » (write side) et projeter, via les événements, une vue matérialisée embarquée et dénormalisée côté lecture — c'est précisément le rôle des projections dans un système Event Sourcing + CQRS.
+
+---
+
+#### En synthèse :
+
+| Critère | Embarqué | Référencé |
+|---|---|---|
+| Lecture complète en 1 requête | ✅ | ❌ (nécessite `$lookup`) |
+| Taille/croissance illimitée | ❌ risque 16 Mo | ✅ |
+| Réutilisation d'une entité entre documents | ❌ duplication | ✅ |
+| Mise à jour atomique commande+lignes | ✅ | ❌ (2 écritures) |
+| Adapté aux vues de lecture CQRS | ✅ | ⚠️ à éviter en lecture directe |
+
 
 ---
 
