@@ -211,6 +211,11 @@ et ce même si chaque commande n'a qu'une seule ligne (un tableau à un seul él
 
 Pour mieux visualiser : 
 
+Ci-dessous les commandes à entrer dans le client mongosh, à coller directement dans le shell :
+```javascript
+mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin"
+```
+
 ```javascript
 use training;
 
@@ -233,8 +238,6 @@ result.forEach((d, i) => {
 })
 
 ```
-
-Ci-dessus les commandes à entrer dans le client mongosh, à coller directement dans le shell
 
 ou à sauvegarder dans un fichier unwind_demo.js à charger avec load()) :  
 ```javascript
