@@ -59,7 +59,7 @@ def describe_plan(plan, label):
         print("totalKeysExamined       :", es.get("totalKeysExamined"))
         print("executionTimeMillis     :", es.get("executionTimeMillis"))
 
-print("\nRequête : ",query,"\n")
+
 
 # 1. AVANT : aucun index adapté -> COLLSCAN attendu
 # NB : Cursor.explain() (pymongo) ne prend pas d'argument de verbosité
@@ -72,6 +72,11 @@ describe_plan(explain_before, "AVANT index adapté")
 #    Règle ESR (Equality, Sort, Range) : "category" est un filtre
 #    d'égalité (E), il passe en premier ; "stock" et "price" sont des
 #    filtres d'intervalle (R), ils viennent ensuite.
+print("\nCréation de l'index adapté à CETTE requête précise :\n")
+print("\nRequête : ",query,"\n")
+print("\nRègle ESR (Equality, Sort, Range) : \"category\" est un filtre d'égalité (E), il passe en premier.\n")
+print("\nLes critères \"stock\" et \"price\" sont des filtres d'intervalle (R), ils viennent ensuite :\n")
+
 print("\nCréation de l'index composé (category, stock, price)...")
 products.create_index([
     ("category", ASCENDING),
