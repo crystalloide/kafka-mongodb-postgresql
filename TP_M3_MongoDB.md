@@ -133,11 +133,35 @@ for idx in products.list_indexes():
     print(idx)
 ```
 
-Exécutez le script :
+#### Informations complémentaires sur une partie du script : 
+
+```script
+...
+db = client["training"]
+products = db["products"]
+...
+```
+db = client["training"] sélectionne la base de données training sur le serveur MongoDB auquel client est connecté. db devient un objet Database de pymongo — l'équivalent de use training dans mongosh.
+
+products = db["products"] sélectionne, à l'intérieur de cette base, la collection products. products devient un objet Collection, sur lequel on peut ensuite appeler .find(), .insert_one(), .aggregate(), etc. — comme db.orders dans les scripts précédents, mais pour une autre collection.
+
+Deux précisions utiles :
+- Aucune création n'a lieu à ce stade :
+    - MongoDB ne crée réellement une base ou une collection qu'au premier document inséré.
+    - Ces deux lignes préparent juste des références Python vers des objets qui existeront (ou pas) côté serveur — pas d'erreur si products n'existe pas encore, tant qu'on ne fait que lire (find() renverra simplement un résultat vide).
+      
+- Syntaxe alternative :
+    - db.products (accès par attribut) fonctionne aussi et est équivalent à db["products"].
+    - La notation par crochets est nécessaire seulement si le nom de la collection contient des caractères spéciaux ou entre en conflit avec une méthode de l'objet Database (par ex. une collection qui s'appellerait find).
+
+
+#### Exécutez le script :
 
 ```bash
 python 21_indexes_explain.py
 ```
+
+
 
 ### Points pédagogiques à commenter
 
