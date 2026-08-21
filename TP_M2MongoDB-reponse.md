@@ -39,9 +39,9 @@ Trois signaux typiques :
 
 - Le besoin exprimé est une lecture **dénormalisée et rapide**, exactement ce que vise une vue de lecture CQRS : on veut restituer une commande complète (items compris) sans jointure au moment de la requête.
 - Avec le modèle embarqué, `db.orders.find({customer_id, order_date: {$gte: ..., $lte: ...}})` (avec un index composé `{customer_id: 1, order_date: -1}`) suffit à répondre en une seule opération.
-- Avec le modèle référencé, il faudrait soit un `$lookup` (coûteux à grande échelle, comme le souligne la synthèse du TP), soit deux requêtes applicatives — ce qui va à l'encontre de l'objectif de latence faible d'une vue de lecture.
+- Avec le modèle référencé, il faudrait soit un `$lookup` (coûteux à grande échelle, comme le souligne la synthèse du TP), soit deux requêtes applicatives : ce qui va à l'encontre de l'objectif de latence faible d'une vue de lecture.
 
-**Point clé à faire ressortir avec les stagiaires** : le modèle de la vue de lecture n'a pas à être le même que celui du modèle d'écriture/domaine. En CQRS, on peut très bien avoir un modèle référencé côté « source de vérité » (write side) et projeter, via les événements, une vue matérialisée embarquée et dénormalisée côté lecture — c'est précisément le rôle des projections dans un système Event Sourcing + CQRS.
+**Point clé à faire ressortir avec les stagiaires** : le modèle de la vue de lecture n'a pas à être le même que celui du modèle d'écriture/domaine. En CQRS, on peut très bien avoir un modèle référencé côté « source de vérité » (write side) et projeter, via les événements, une vue matérialisée embarquée et dénormalisée côté lecture : c'est précisément le rôle des projections dans un système Event Sourcing + CQRS.
 
 ---
 
