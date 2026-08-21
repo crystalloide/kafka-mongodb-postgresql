@@ -401,9 +401,23 @@ const result = db.orders.aggregate([
 printjson(result[0]);
 ```
 
+Puis lancer : 
+
+```javascript
+mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin" --file total_commande_1_doc.js
+```
+
 Pour le faire que la totalité des documents : 
 
 Dans le fichier total_commande_tous_les_doc.js : 
+
+```javascript
+mongosh "mongodb://formation:formation@localhost:27017/?authSource=admin" 
+```
+
+```javascript
+use training
+```
 
 ```javascript
 db.orders.aggregate([
