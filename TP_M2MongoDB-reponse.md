@@ -280,24 +280,7 @@ Affichage en retour :
 
 ```Text
 
-use training
-
-const doc = db.orders.findOne({ status: "CONFIRMED", "items.1": { $exists: true } })
-|
-| print("=== AVANT $unwind : 1 document ===")
-| printjson(doc)
-|
-| print(`\n=== APRÈS $unwind : ${doc.items.length} documents attendus ===`)
-| const result = db.orders.aggregate([
-|   { $match: { _id: doc._id } },
-|   { $unwind: "$items" }
-| ]).toArray()
-|
-| print(`Nombre de documents obtenus : ${result.length}\n`)
-| result.forEach((d, i) => {
-|   print(`--- document ${i + 1} ---`)
-|   printjson(d)
-| })
+Base de données active : training
 === AVANT $unwind : 1 document ===
 {
   _id: ObjectId('6a88279b016a3bfada0bd72b'),
@@ -379,7 +362,6 @@ Nombre de documents obtenus : 4
     quantity: 2
   }
 }
-
 ```
 
 
