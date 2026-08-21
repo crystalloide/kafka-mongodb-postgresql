@@ -211,7 +211,7 @@ et ce même si chaque commande n'a qu'une seule ligne (un tableau à un seul él
 
 Pour mieux visualiser l'effet du "unwind" : 
 
-Option 1 : sauvegarder dans un fichier unwind_demo.js 
+##### Option 1 : sauvegarder dans un fichier unwind_demo.js 
 
 Commandes à entrer dans le client mongosh, à coller directement dans le shell :
 
@@ -244,7 +244,7 @@ result.forEach((d, i) => {
 
 ```
 
-Option 2 : sauvegarder dans un fichier unwind_demo.js 
+##### Option 2 : sauvegarder dans un fichier unwind_demo.js 
 
 ```javascript
 db = db.getSiblingDB("training");
