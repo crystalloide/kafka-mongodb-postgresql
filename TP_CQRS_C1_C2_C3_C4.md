@@ -105,7 +105,7 @@ ___
 
 **- Modèles optimisés et séparés :**
   
-Tu peux optimiser PostgreSQL pour les écritures transactionnelles (index, contraintes) et MongoDB pour les lectures rapides, dénormalisées, adaptées aux besoins métier.
+On optimise le modèle de données dans PostgreSQL pour les écritures transactionnelles (index, contraintes) et MongoDB pour les lectures rapides, dénormalisées, adaptées aux besoins métier.
 
 **- Scalabilité indépendante :**
   
