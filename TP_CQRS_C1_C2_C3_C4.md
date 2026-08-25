@@ -28,11 +28,14 @@ Les données lues et les données écrites ne sont plus forcément dans la même
 
 Vue logique du Command Side et Query Side : 
 
+___
 **Dans le TP, on peut résumer l’architecture CQRS ainsi :**
-
+___
 **Python** => **API** => **kafka orders.events** 	=> **kafka connect sink** 	=> **PostgreSQL : table "orders"**			**écriture**	**"Command side"**
+___
+**Python** => **API** => **kafka orders.events** 	=> **kafka consummer** 		=> **MongoDB** : **collection "order_view"**	**lecture**		**"Query Side"**
 
-.    			               **kafka orders.events**	=> **kafka consummer** 		=> **MongoDB** : **collection "order_view"**	**lecture**		**"Query Side"**
+
 ___
 ### Command Side (écriture)
 
