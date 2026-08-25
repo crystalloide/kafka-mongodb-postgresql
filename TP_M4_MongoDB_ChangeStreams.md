@@ -10,7 +10,7 @@
 - fichier `.env` avec `MONGO_URI` configuré
 
 - **Bien dérouler les instructions en pré-requis données dans le répertoire t4_m4**
-      formation-env/tp_m4/Prerequis_MongoDB_en_ReplicaSet.md
+      - formation-env/tp_m4/Prerequis_MongoDB_en_ReplicaSet.md
 
 ## Objectifs
 
