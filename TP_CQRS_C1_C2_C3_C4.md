@@ -278,20 +278,6 @@ Points à aborder avec les stagiaires :
 
 
 
-```bash
-cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
-source ../.venv/bin/activate  # si besoin
-python command_api.py
-```
-
-
-
-
-
-
-
-
-
 
 
 ## TP C2 — Command Side (45 min)
@@ -439,9 +425,14 @@ Ne produire des evènemetns que depuis depuis command_api.py :
 
 Lancer command_api.py
 
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
+python command_api.py
+```
 
 
-ou via une commande propre : (exemple) 
+
+Alternative : charger quelques commandes via une commande propre : (exemple) 
 
 ```bash
 curl -X POST http://localhost:5000/orders \
@@ -471,8 +462,7 @@ Dans Thunder Client ou via curl :
 
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
-curl -X POST -H "Content-Type: application/json" \
-  --data @connect-sink-postgres.json http://localhost:8083/connectors
+curl -X POST -H "Content-Type: application/json" --data @connect-sink-postgres.json http://localhost:8083/connectors
 ```
 
 
@@ -505,6 +495,10 @@ curl http://localhost:8083/connectors/postgres-sink-orders/status
 
 Réponse attendue avec état `RUNNING` et au moins une tâche active.
 
+
+```bash
+docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM orders;"
+```
 
 
 3. Générer quelques commandes de test :
