@@ -1,0 +1,7 @@
+kafka-python==2.3.1
+pymongo>=4.7,<5
+psycopg2-binary
+python-dotenv
+faker
+flask
+fastapi
