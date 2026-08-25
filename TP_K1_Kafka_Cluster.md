@@ -131,6 +131,21 @@ Regardons la création via Kafka UI :
 
 ### 2.3 Vérification
 
+
+En ligne de commande : 
+
+```bash
+docker exec -it kafka1   /usr/bin/kafka-topics   --bootstrap-server kafka1:19092,kafka2:19092,kafka3:19092   --list
+```
+
+```bash
+docker exec -it kafka1   /usr/bin/kafka-topics   --bootstrap-server kafka1:19092,kafka2:19092,kafka3:19092   --describe   --topic orders.events 
+```
+
+```bash
+docker exec -it kafka1   /usr/bin/kafka-topics   --bootstrap-server kafka1:19092,kafka2:19092,kafka3:19092   --describe   --topic orders.commands 
+```
+
 Dans Kafka UI :
 
 - Vérifiez que les topics `orders.commands` et `orders.events` apparaissent bien.
