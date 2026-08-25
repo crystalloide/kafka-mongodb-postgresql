@@ -31,9 +31,9 @@ Les données lues et les données écrites ne sont plus forcément dans la même
 ___
 **Dans le TP, on peut résumer l’architecture CQRS ainsi :**
 ___
-**Python** => **API** => **kafka orders.events** 	=> **kafka connect sink** 	=> **PostgreSQL : table "orders"**			**écriture**	**"Command side"**
+**Python** => **API** => **kafka orders.events** 	=> **kafka connect sink** 	=> **PostgreSQL : table "orders"**			pour matérialiser les **écritures**	**"Command side"**
 ___
-**Python** => **API** => **kafka orders.events** 	=> **kafka consummer** 		=> **MongoDB** : **collection "order_view"**	**lecture**		**"Query Side"**
+**Python** => **API** => **kafka orders.events** 	=> **kafka consummer** 		=> **MongoDB** : **collection "order_view"**	pour servir les **lectures**		**"Query Side"**
 
 
 ___
