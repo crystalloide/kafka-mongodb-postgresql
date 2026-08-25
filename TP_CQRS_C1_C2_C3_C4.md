@@ -275,6 +275,25 @@ Points à aborder avec les stagiaires :
 
 ---
 
+
+
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
+source ../.venv/bin/activate  # si besoin
+python command_api.py
+```
+
+
+
+
+
+
+
+
+
+
+
 ## TP C2 — Command Side (45 min)
 
 Objectif : mettre en place une API simple de création/annulation de commandes, qui publie des événements sur `orders.events` et laisse le connecteur JDBC sink les persister dans PostgreSQL.
@@ -377,22 +396,76 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
 ```
 
-### 2.2 Vérifier la propagation dans PostgreSQL via Kafka Connect
+Lancer l’API Command Side :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
+source ../.venv/bin/activate  # si besoin
+python command_api.py
+```
+
+Laisser ce terminal ouvert (Flask bloque la console).
+
+
+### Supprimer et récréer le topic orders.events : 
+
+Ensuite, dans un autre terminal  :
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
+source ../.venv/bin/activate  # si besoin
+```
+
+```bash
+# Supprimer
+docker exec -it kafka1 \
+  /usr/bin/kafka-topics \
+  --bootstrap-server kafka1:19092 \
+  --delete \
+  --topic orders.events
+```
+
+```bash
+# Recréer (3 partitions, RF=3)
+docker exec -it kafka1 \
+  /usr/bin/kafka-topics \
+  --bootstrap-server kafka1:19092 \
+  --create \
+  --topic orders.events \
+  --partitions 3 \
+  --replication-factor 3
+```
+
+Ne produire des evènemetns que depuis depuis command_api.py :
+
+Lancer command_api.py
+
+
+
+ou via une commande propre : (exemple) 
+
+```bash
+curl -X POST http://localhost:5000/orders \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_id": "CUST-1001",
+    "items": [
+      {"product_id": "P-001", "quantity": 1, "unit_price": 79.9},
+      {"product_id": "P-002", "quantity": 2, "unit_price": 29.9}
+    ]
+  }'
+
+```
+
+  
+### Vérifier la propagation dans PostgreSQL via Kafka Connect
 
 1. S’assurer que le connecteur Kafka Connect **sink JDBC** est bien configuré pour consommer `orders.events` et insérer dans une table `orders` :
    - Dans `connect-sink-postgres.json`, vérifier :
      - `topics`: `orders.events`.
      - `table.name.format`: `orders`.
 
-2. Vérifier dans Kafka Connect REST :
 
-### Vidage de la la table cible clients_sink :
-```bash
-docker exec -it postgres psql -U formation -d formation \
-  -c "DELETE FROM clients_sink;"
-```
-
-### 2.2 Création du connecteur Sink via l’API REST
+### Création du connecteur Sink via l’API REST
 
 Dans Thunder Client ou via curl :
 
