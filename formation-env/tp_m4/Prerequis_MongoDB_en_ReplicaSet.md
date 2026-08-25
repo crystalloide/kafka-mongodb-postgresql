@@ -338,6 +338,7 @@ REDPANDA_CONSOLE=http://localhost:8090
 
 # Kafka Connect (REST API) - utile pour tester via Thunder Client
 KAFKA_CONNECT=http://localhost:8083
+```
 
 ```bash
 vi ~/kafka-mongodb-postgresql/formation-env/tp_m4/.env
