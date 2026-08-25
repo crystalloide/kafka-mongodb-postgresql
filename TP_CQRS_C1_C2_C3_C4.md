@@ -421,13 +421,13 @@ curl http://localhost:8083/connectors
 Vous devez voir au moins le connecteur :
 
 ```text
-["postgres-sink-clients"]
+["postgres-sink-orders"]
 ```
 
 Statut du connecteur sink :
 
 ```bash
-curl http://localhost:8083/connectors/postgres-sink-clients/status
+curl http://localhost:8083/connectors/postgres-sink-orders/status
 ```
 
 Réponse attendue avec état `RUNNING` et au moins une tâche active.
