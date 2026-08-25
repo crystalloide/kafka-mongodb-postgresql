@@ -431,7 +431,6 @@ python command_api.py
 ```
 
 
-
 Alternative : charger quelques commandes via une commande propre : (exemple) 
 
 ```bash
@@ -447,11 +446,29 @@ curl -X POST http://localhost:5000/orders \
 
 ```
 
-  
+```bash
+docker exec -it kafka1 \
+  bash -c 'unset KAFKA_OPTS; kafka-console-consumer \
+    --bootstrap-server localhost:19092 \
+    --topic orders.events \
+    --from-beginning \
+    --property print-key=true \
+    --property key.separator=" | " \
+    --max-messages 10'
+```
+
+
+
+```bash
+docker exec -it postgres psql -U formation -d formation \
+  -c "SELECT * FROM orders;"
+```
+
+
 ### Vérifier la propagation dans PostgreSQL via Kafka Connect
 
 1. S’assurer que le connecteur Kafka Connect **sink JDBC** est bien configuré pour consommer `orders.events` et insérer dans une table `orders` :
-   - Dans `connect-sink-postgres.json`, vérifier :
+   - Dans `connect-sink-orders.json`, vérifier :
      - `topics`: `orders.events`.
      - `table.name.format`: `orders`.
 
@@ -462,14 +479,14 @@ Dans Thunder Client ou via curl :
 
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
-curl -X POST -H "Content-Type: application/json" --data @connect-sink-postgres.json http://localhost:8083/connectors
+curl -X POST -H "Content-Type: application/json" --data @connect-sink-orders.json http://localhost:8083/connectors
 ```
 
 
 #### Si besoin : Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
 
 ```bash
-curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
+curl -X DELETE http://localhost:8083/connectors/postgres-sink-orders
 ```
 
 
