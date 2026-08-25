@@ -26,7 +26,7 @@ Les données lues et les données écrites ne sont plus forcément dans la même
 
 ## 2. Schéma de principe pour le TP CQRS (Kafka / PostgreSQL / MongoDB)
 
-## Vue logique du Command Side et Query Side : 
+### Vue logique du Command Side et Query Side : 
 
 ___
 **Dans le TP, on peut résumer l’architecture CQRS ainsi :**
