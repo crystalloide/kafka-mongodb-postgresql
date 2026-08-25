@@ -482,6 +482,16 @@ cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
 curl -X POST -H "Content-Type: application/json" --data @connect-sink-orders.json http://localhost:8083/connectors
 ```
 
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-sink-orders
+```
+
+```bash
+curl -X POST -H "Content-Type: application/json" \
+  --data @/connect-sink-postgres.json \
+  http://localhost:8083/connectors
+```
+
 
 #### Si besoin : Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
 
