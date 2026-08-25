@@ -219,8 +219,6 @@ docker exec -it postgres psql -U formation -d formation \
   -c "SELECT * FROM clients;"
 ```
 
-Les lignes de `clients` doivent apparaître dans `clients_sink` (par exemple les clients Alice, Bruno, Chloé du script d’init).
-
 2. Vérifiez le topic `pg-clients` :
 
 ```bash
@@ -237,6 +235,8 @@ docker exec -it kafka1 kafka-console-consumer \
 docker exec -it postgres psql -U formation -d formation \
   -c "SELECT * FROM clients_sink;"
 ```
+
+Les lignes de `clients` doivent apparaître dans `clients_sink` (par exemple les clients Alice, Bruno, Chloé du script d’init).
 
 Si les mêmes lignes apparaissent, le pipeline Postgres → Kafka → Postgres fonctionne de bout en bout.
 
