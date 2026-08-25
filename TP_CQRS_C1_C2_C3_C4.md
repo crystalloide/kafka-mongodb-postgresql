@@ -121,7 +121,7 @@ Le code d’écriture reste focalisé sur les règles métier, la validation et 
 
 **- Replay / audit :**
   
-En gardant les événements dans Kafka, tu as un journal auditable et rejouable pour reconstruire des vues ou analyser l’historique des commandes.
+En gardant les événements dans Kafka, cela nous donne un journal auditable et rejouable pour reconstruire des vues ou analyser l’historique des commandes.
 
 
 ### Inconvénients et limites : 
