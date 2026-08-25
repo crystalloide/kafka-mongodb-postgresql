@@ -46,19 +46,19 @@ ___
 
 #### 2°) Kafka — topic orders.events
 
-  - L’API publie les événements sur orders.events via KafkaProducer avec acks='all'.
+  - L’API publie les événements sur le topic **orders.events** via **KafkaProducer** avec acks='all'.
 
 #### 3°) Kafka Connect JDBC sink
 
- - Consomme orders.events.
- - Insère les événements dans une table transactionnelle orders de PostgreSQL (source de vérité écriture).
+ - Consomme les messages du topic **orders.events**
+ - Insère les événements dans une table transactionnelle "orders" de PostgreSQL (source de vérité écriture).
 
 ___
 ### Query Side (lecture)
 
 #### 4°) Projecteur Python (projector.py)
 
- - KafkaConsumer sur orders.events.
+ - KafkaConsumer des messages dans le topic **orders.events**
  - Pour chaque événement, met à jour (upsert) un document dans MongoDB (orders_view) : état dénormalisé par commande (client, statut, total, articles…).
 
 #### 5°) API de lecture Python (query_api.py)
