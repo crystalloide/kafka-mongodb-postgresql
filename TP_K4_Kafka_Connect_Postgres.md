@@ -175,47 +175,17 @@ curl -X POST -H "Content-Type: application/json" \
 ```
 
 
-
 #### Si besoin : Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
 
 ```bash
 curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
 ```
 
-#### A savoir : le connecteur source garde son offset précédent (dernier id/timestamp lus) même après recréation, car Kafka Connect 3.8 stocke ces offsets dans un topic interne indépendant du topic de données, même s'il a été supprimé. 
-
-Si le connecteur source pense avoir déjà lu les lignes existantes, il n'en réémet aucune : ceci peut occasionner un topic vide et donc la table sink vide.
-
-Dans cette situation, le plus simple est de réinitialiser les offsets via l'API REST (Kafka Connect 3.8 supporte nativement cette opération) :
-
-
-##### 1. Arrêter le connecteur source (requis avant de reset ses offsets)
-```bash
-curl -X PUT http://localhost:8083/connectors/postgres-source-clients/stop
-```
-
-##### 2. Réinitialiser ses offsets
-```bash
-curl -X DELETE http://localhost:8083/connectors/postgres-source-clients/offsets
-```
-
-##### 3. Redémarrer le connecteur
-```bash
-curl -X PUT http://localhost:8083/connectors/postgres-source-clients/resume
-```
-
-##### Vérification :
-```bash
-docker exec -it kafka1 kafka-console-consumer --bootstrap-server localhost:19092 --topic pg-clients --from-beginning --max-messages 3
-```
-
-On voit les 3 messages réapparaître (avec l'enveloppe schema/payload).
-
 
 
 ### 2.3 Vérification du connecteur Sink
 
-1. Liste des connecteurs :
+2.3.1. Liste des connecteurs :
 
 ```bash
 curl http://localhost:8083/connectors
@@ -227,7 +197,7 @@ Vous devez voir les deux connecteurs :
 ["postgres-source-clients", "postgres-sink-clients"]
 ```
 
-2. Statut du connecteur sink :
+2.3.2. Statut du connecteur sink :
 
 ```bash
 curl http://localhost:8083/connectors/postgres-sink-clients/status
@@ -235,18 +205,10 @@ curl http://localhost:8083/connectors/postgres-sink-clients/status
 
 Réponse attendue avec état `RUNNING` et au moins une tâche active.
 
-3. Vérifier la table cible dans PostgreSQL :
-
-```bash
-docker exec -it postgres psql -U formation -d formation \
-  -c "SELECT * FROM clients_sink;"
-```
-
-Les lignes de `clients` doivent apparaître dans `clients_sink` (par exemple les clients Alice, Bruno, Chloé du script d’init).
 
 ---
 
-## 3. Exercice — Test CDC de bout en bout et gestion des offsets (15 min)
+## 3. Fin de l'exercice : Test CDC de bout en bout et gestion des offsets (15 min)
 
 ### 3.1 Test CDC bout en bout
 
@@ -256,6 +218,8 @@ Les lignes de `clients` doivent apparaître dans `clients_sink` (par exemple les
 docker exec -it postgres psql -U formation -d formation \
   -c "SELECT * FROM clients;"
 ```
+
+Les lignes de `clients` doivent apparaître dans `clients_sink` (par exemple les clients Alice, Bruno, Chloé du script d’init).
 
 2. Vérifiez le topic `pg-clients` :
 
