@@ -380,5 +380,79 @@ docker exec -it mongodb mongosh \
   --eval 'rs.status()'
 ```
 
-On doit voir **setName: "rs0"** et un membre **PRIMARY**
+On doit voir **set: "rs0"** et un membre **PRIMARY**
+
+exemple : 
+
+```Exemple
+{
+  set: 'rs0',
+  date: ISODate('2026-08-25T21:10:47.449Z'),
+  myState: 1,
+  term: Long('1'),
+  syncSourceHost: '',
+  syncSourceId: -1,
+  heartbeatIntervalMillis: Long('2000'),
+  majorityVoteCount: 1,
+  writeMajorityCount: 1,
+  votingMembersCount: 1,
+  writableVotingMembersCount: 1,
+  optimes: {
+    lastCommittedOpTime: { ts: Timestamp({ t: 1787692243, i: 23 }), t: Long('1') },
+    lastCommittedWallTime: ISODate('2026-08-25T21:10:43.833Z'),
+    readConcernMajorityOpTime: { ts: Timestamp({ t: 1787692243, i: 23 }), t: Long('1') },
+    appliedOpTime: { ts: Timestamp({ t: 1787692243, i: 23 }), t: Long('1') },
+    durableOpTime: { ts: Timestamp({ t: 1787692243, i: 23 }), t: Long('1') },
+    lastAppliedWallTime: ISODate('2026-08-25T21:10:43.833Z'),
+    lastDurableWallTime: ISODate('2026-08-25T21:10:43.833Z')
+  },
+  lastStableRecoveryTimestamp: Timestamp({ t: 1787692243, i: 1 }),
+  electionCandidateMetrics: {
+    lastElectionReason: 'electionTimeout',
+    lastElectionDate: ISODate('2026-08-25T21:10:43.445Z'),
+    electionTerm: Long('1'),
+    lastCommittedOpTimeAtElection: { ts: Timestamp({ t: 1787692243, i: 1 }), t: Long('-1') },
+    lastSeenOpTimeAtElection: { ts: Timestamp({ t: 1787692243, i: 1 }), t: Long('-1') },
+    numVotesNeeded: 1,
+    priorityAtElection: 1,
+    electionTimeoutMillis: Long('10000'),
+    newTermStartDate: ISODate('2026-08-25T21:10:43.523Z'),
+    wMajorityWriteAvailabilityDate: ISODate('2026-08-25T21:10:43.569Z')
+  },
+  members: [
+    {
+      _id: 0,
+      name: 'localhost:27017',
+      health: 1,
+      state: 1,
+      stateStr: 'PRIMARY',
+      uptime: 45,
+      optime: { ts: Timestamp({ t: 1787692243, i: 23 }), t: Long('1') },
+      optimeDate: ISODate('2026-08-25T21:10:43.000Z'),
+      lastAppliedWallTime: ISODate('2026-08-25T21:10:43.833Z'),
+      lastDurableWallTime: ISODate('2026-08-25T21:10:43.833Z'),
+      syncSourceHost: '',
+      syncSourceId: -1,
+      infoMessage: 'Could not find member to sync from',
+      electionTime: Timestamp({ t: 1787692243, i: 2 }),
+      electionDate: ISODate('2026-08-25T21:10:43.000Z'),
+      configVersion: 1,
+      configTerm: 1,
+      self: true,
+      lastHeartbeatMessage: ''
+    }
+  ],
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1787692243, i: 23 }),
+    signature: {
+      hash: Binary.createFromBase64('QEdfIIpjp5SUwQ0h8Wpv2J+TWSk=', 0),
+      keyId: Long('7678079718997884934')
+    }
+  },
+  operationTime: Timestamp({ t: 1787692243, i: 23 })
+}
+```
+
+Reprenons le déroulé des TPs maintenant :-)
 
