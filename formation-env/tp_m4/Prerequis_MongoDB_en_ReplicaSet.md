@@ -303,16 +303,47 @@ sudo chown 999:999 mongo-keyfile
 
 ### Modification de env avec l'URI correspondant à mongoDB en ReplicaSet : 
 
-```bash
-vi ~/kafka-mongodb-postgresql/formation-env/.env
-vi ~/kafka-mongodb-postgresql/formation-env/tp_m4/.env
-```
-
 Il faut s'assurer de l'URI pour un ReplicaSet : MONGO_URI avec **replicaSet=rs0** :
 
 ```text
 MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin&replicaSet=rs0
 ```
+
+Modifions donc les informations : 
+
+```bash
+vi ~/kafka-mongodb-postgresql/formation-env/.env
+```
+
+contenu à mettre :
+
+```text
+# Endpoints environnement de formation Kafka / MongoDB / CQRS
+# A charger avec python-dotenv (load_dotenv())
+
+# Kafka - cluster KRaft 3 noeuds (controller/broker)
+# Port host different par broker (listener PLAINTEXT_HOST) :
+# kafka1 -> 9092, kafka2 -> 9094, kafka3 -> 9096
+# (9093 est le port interne du listener CONTROLLER, jamais expose a l'hote)
+KAFKA_BOOTSTRAP=localhost:9092,localhost:9094,localhost:9096
+
+# MongoDB - noeud unique, utilisateur root cree via MONGO_INITDB_ROOT_USERNAME/PASSWORD
+#MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin
+MONGO_URI=mongodb://formation:formation@localhost:27017/?authSource=admin&replicaSet=rs0
+
+# Consoles de supervision / UI
+KAFKA_UI=http://localhost:8080
+HAWTIO=http://localhost:8888/hawtio
+REDPANDA_CONSOLE=http://localhost:8090
+
+# Kafka Connect (REST API) - utile pour tester via Thunder Client
+KAFKA_CONNECT=http://localhost:8083
+
+```bash
+vi ~/kafka-mongodb-postgresql/formation-env/tp_m4/.env
+```
+
+mettre le même contenu que précédemment 
 
 
 ### Relance de la pile avec mongo en ReplicaSet : 
