@@ -386,10 +386,53 @@ if __name__ == "__main__":
 
 2. Vérifier dans Kafka Connect REST :
 
+### Vidage de la la table cible clients_sink :
+```bash
+docker exec -it postgres psql -U formation -d formation \
+  -c "DELETE FROM clients_sink;"
+```
+
+### 2.2 Création du connecteur Sink via l’API REST
+
+Dans Thunder Client ou via curl :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
+curl -X POST -H "Content-Type: application/json" \
+  --data @connect-sink-postgres.json http://localhost:8083/connectors
+```
+
+
+#### Si besoin : Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
+
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
+```
+
+
+### Vérification du connecteur Sink
+
+Liste des connecteurs :
+
 ```bash
 curl http://localhost:8083/connectors
-curl http://localhost:8083/connectors/postgres-sink-orders/status
 ```
+
+Vous devez voir au moins le connecteur :
+
+```text
+["postgres-sink-clients"]
+```
+
+Statut du connecteur sink :
+
+```bash
+curl http://localhost:8083/connectors/postgres-sink-clients/status
+```
+
+Réponse attendue avec état `RUNNING` et au moins une tâche active.
+
+
 
 3. Générer quelques commandes de test :
 
