@@ -9,7 +9,7 @@ CQRS est un pattern d’architecture qui sépare strictement les opérations d�
 
 ### Définition
 
-CQRS (Command Query Responsibility Segregation) consiste à utiliser un modèle pour les commandes qui modifient l’état (create/update/delete) et un modèle distinct pour les requêtes qui lisent l’état sans le modifier.
+**CQRS** (**Command Query Responsibility Segregation**) consiste à utiliser un modèle pour les commandes qui modifient l’état (create/update/delete) et un modèle distinct pour les requêtes qui lisent l’état sans le modifier.
 
 ### Principe clé
 
