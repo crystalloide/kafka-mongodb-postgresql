@@ -174,6 +174,45 @@ curl -X POST -H "Content-Type: application/json" \
   --data @connect-configs/connect-sink-postgres.json http://localhost:8083/connectors
 ```
 
+
+
+#### Si besoin : Pour supprimer et recréer un connecteur si besoin (par exemple après une modification de config) :
+
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-sink-clients
+```
+
+#### A savoir : le connecteur source garde son offset précédent (dernier id/timestamp lus) même après recréation, car Kafka Connect 3.8 stocke ces offsets dans un topic interne indépendant du topic de données, même s'il a été supprimé. 
+
+Si le connecteur source pense avoir déjà lu les lignes existantes, il n'en réémet aucune : ceci peut occasionner un topic vide et donc la table sink vide.
+
+Dans cette situation, le plus simple est de réinitialiser les offsets via l'API REST (Kafka Connect 3.8 supporte nativement cette opération) :
+
+
+##### 1. Arrêter le connecteur source (requis avant de reset ses offsets)
+```bash
+curl -X PUT http://localhost:8083/connectors/postgres-source-clients/stop
+```
+
+##### 2. Réinitialiser ses offsets
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-source-clients/offsets
+```
+
+##### 3. Redémarrer le connecteur
+```bash
+curl -X PUT http://localhost:8083/connectors/postgres-source-clients/resume
+```
+
+##### Vérification :
+```bash
+docker exec -it kafka1 kafka-console-consumer --bootstrap-server localhost:19092 --topic pg-clients --from-beginning --max-messages 3
+```
+
+On voit les 3 messages réapparaître (avec l'enveloppe schema/payload).
+
+
+
 ### 2.3 Vérification du connecteur Sink
 
 1. Liste des connecteurs :
