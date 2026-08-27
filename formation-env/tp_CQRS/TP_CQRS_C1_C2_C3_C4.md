@@ -445,10 +445,18 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
 ```
 
+
+Ouvrez un terminal et activez votre environnement virtuel :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+python -m venv .venv && source .venv/bin/activate
+cd tp_cqrs
+```
+
 Lancer l'API dans un nouveau terminal :
 
 ```bash
-source .venv/bin/activate
 python query_api.py
 ```
 
@@ -458,6 +466,13 @@ python query_api.py
 
 **Générer des données en masse :**
 Dans un terminal, lancez ce script pour simuler du trafic :  
+Ouvrez un terminal et activez votre environnement virtuel :
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+python -m venv .venv && source .venv/bin/activate
+cd tp_cqrs
+```
 
 ```bash
 for i in $(seq 1 20); do
