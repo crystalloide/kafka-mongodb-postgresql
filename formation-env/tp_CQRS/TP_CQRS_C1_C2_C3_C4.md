@@ -334,6 +334,7 @@ Créez `projector.py` :
 ```python
 import json
 import os
+import uuid
 from typing import Any
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
@@ -343,12 +344,24 @@ load_dotenv()
 
 BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092,localhost:9094,localhost:9096").split(",")
 ORDERS_EVENTS_TOPIC = "orders.events"
-GROUP_ID = "orders-projector-group"
 MONGO_URI = os.getenv("MONGO_URI", "mongodb://formation:formation@localhost:27017/?authSource=admin&replicaSet=rs0")
 
 mongo_client = MongoClient(MONGO_URI)
 db = mongo_client["training"]
 orders_view = db["orders_view"]
+
+# 1. Auto-détection de l'état de la base de données
+is_empty = orders_view.count_documents({}) == 0
+
+# 2. Assignation dynamique du groupe Kafka
+if is_empty:
+    # Base vide = nouveau groupe pour forcer la relecture de tout l'historique
+    GROUP_ID = f"orders-projector-group-rebuild-{uuid.uuid4()}"
+    print("🔄 Vue MongoDB vide détectée ! Rejeu automatique de l'historique en cours...")
+else:
+    # Base existante = on reprend la lecture normale
+    GROUP_ID = "orders-projector-group"
+    print("✅ Vue MongoDB existante. Reprise de la lecture classique...")
 
 consumer = KafkaConsumer(
     ORDERS_EVENTS_TOPIC,
@@ -383,7 +396,7 @@ def apply_order_cancelled(event: dict[str, Any]) -> None:
     )
 
 if __name__ == "__main__":
-    print("Projecteur démarré... Ctrl+C pour arrêter.")
+    print("Projecteur en écoute active... Ctrl+C pour arrêter.")
     try:
         for msg in consumer:
             event = msg.value
