@@ -324,7 +324,7 @@ Vos événements bruts sont persistés fidèlement, offrant une piste d'audit pa
 Remarque : pour supprimer tous les événements dans PostgreSQL  (à ne pas faire ici) :
 
 ```bash
-docker exec postgres psql -U formation -d formation -c DELETE FROM orders;"
+docker exec postgres psql -U formation -d formation -c "DELETE FROM orders;"
 ```
 ---
 
