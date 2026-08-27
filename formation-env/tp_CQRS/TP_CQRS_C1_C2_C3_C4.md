@@ -516,13 +516,21 @@ Supprimez totalement la vue de lecture MongoDB :
 docker exec -it mongodb mongosh -u formation -p formation --authenticationDatabase admin --eval 'db.getSiblingDB("training").orders_view.drop()'
 ```
 
-Dans le shell MongoDB (mongosh), la commande use training est un raccourci interactif (un helper de la console), pas une méthode JavaScript native.
-Lorsqu'elle est passée dans une chaîne --eval non interactive, le contexte de la base de données ne bascule pas correctement pour les instructions qui suivent. 
-Par conséquent, db.orders_view.drop() s'est exécuté sur la base par défaut (test ou admin), ce qui fait que votre collection training.orders_view n'a absolument jamais été touchée, d'où le fait que vos données sont toujours là lors du curl.
+**La commande infaillible :**
+Pour cibler proprement une base en mode script/non-interactif sans utiliser le raccourci **use**, il faut utiliser la méthode JavaScript native **db.getSiblingDB()** :
 
-**La commande exacte et infaillible :**
-Pour cibler proprement une base en mode script/non-interactif sans utiliser le raccourci use, il faut utiliser la méthode JavaScript native db.getSiblingDB() :
-Coupez `projector.py` (Ctrl+C) et relancez-le :
+Dans le shell MongoDB (**mongosh**), la commande **use training** est un raccourci interactif (un helper de la console), pas une méthode JavaScript native.
+Lorsqu'elle est passée dans une chaîne **--eval** non interactive, le contexte de la base de données ne bascule pas correctement pour les instructions qui suivent. 
+Par conséquent, **db.orders_view.drop()** serait exécuté sur la base par défaut (test ou admin) : la bonne collection *training.orders_view** ne serait pas supprimée, et les données resteraient là et apparaîtraient lors du curl suivant.
+
+**Vérifier le Query Side (Lecture - MongoDB)**
+
+```bash
+curl -s http://localhost:5001/customers/CUST-15/orders
+```
+
+
+**Arrêter le script `projector.py` (Ctrl+C) et le relancer :**
 
 ```bash
 python projector.py
