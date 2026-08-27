@@ -402,7 +402,12 @@ if __name__ == "__main__":
 Lancer le projecteur dans un nouveau terminal :
 
 ```bash
-source .venv/bin/activate
+cd ~/kafka-mongodb-postgresql/formation-env/
+python -m venv .venv && source .venv/bin/activate
+```
+
+```bash
+cd tp_cqrs
 python projector.py
 ```
 
