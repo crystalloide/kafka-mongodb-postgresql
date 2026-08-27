@@ -291,16 +291,24 @@ curl -s http://localhost:8083/connectors/postgres-sink-orders/status | grep RUNN
 Créer une commande :
 
 ```bash
+# 1. Créer la commande et stocker la réponse JSON
 ORDER_RESPONSE=$(curl -s -X POST http://localhost:5000/orders \
   -H "Content-Type: application/json" \
   -d '{"customer_id": "CUST-1001", "items": [{"product_id": "P-001", "quantity": 1, "unit_price": 79.9}]}')
-echo $ORDER_RESPONSE
-ORDER_ID=$(echo $ORDER_RESPONSE | grep -o '"order_id":"[^"]*' | cut -d'"' -f4)
+
+# Afficher la réponse pour vérifier
+echo "Réponse reçue : $ORDER_RESPONSE"
+
+# 2. Extraire proprement l'ID grâce à jq
+ORDER_ID=$(echo "$ORDER_RESPONSE" | jq -r '.order_id')
+echo "ID extrait : $ORDER_ID"
+
 ```
 
 L'annuler :
 
 ```bash
+# 3. Annuler la commande avec l'ID récupéré
 curl -X POST http://localhost:5000/orders/$ORDER_ID/cancel \
   -H "Content-Type: application/json" \
   -d '{"customer_id": "CUST-1001"}'
