@@ -285,6 +285,7 @@ volumes:
 
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env
+sudo rm -Rf mongo-keyfile
 ls -l mongo-keyfile
 ```
 
