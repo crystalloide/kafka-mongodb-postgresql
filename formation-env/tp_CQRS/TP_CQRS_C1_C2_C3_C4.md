@@ -197,17 +197,34 @@ pip install -r requirements.txt
 pip list
 ```
 
-Vous devez voir les 5 paquets avec leurs versions.
+Vous devez voir les paquets avec leurs versions.
 ```text
-Package         Version
---------------- -------
-dnspython       2.8.0
-Faker           40.36.0
-kafka-python    2.3.1
-pip             26.2.1
-psycopg2-binary 2.9.12
-pymongo         4.17.0
-python-dotenv   1.2.2
+Package           Version
+----------------- -------
+annotated-doc     0.0.5
+annotated-types   0.8.0
+anyio             4.14.2
+blinker           1.9.0
+click             8.5.0
+dnspython         2.8.0
+Faker             40.37.0
+fastapi           0.141.1
+Flask             3.1.3
+idna              3.19
+itsdangerous      2.2.0
+Jinja2            3.1.6
+kafka-python      2.3.1
+MarkupSafe        3.0.3
+pip               26.2.1
+psycopg2-binary   2.9.12
+pydantic          2.13.4
+pydantic_core     2.46.4
+pymongo           4.17.0
+python-dotenv     1.2.3
+starlette         1.6.0
+typing_extensions 4.16.0
+typing-inspection 0.4.4
+Werkzeug          3.1.8
 
 ```
 
