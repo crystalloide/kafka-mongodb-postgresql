@@ -241,7 +241,7 @@ docker exec -it kafka1 /usr/bin/kafka-topics --bootstrap-server kafka1:19092 --c
 
 ```bash
 # Nettoyer la table PostgreSQL s'il y a un résidu d'un TP précédent
-docker exec -it postgres psql -U formation -d formation -c "DROP TABLE IF EXISTS orders;"
+docker exec postgres psql -U formation -d formation -c "DROP TABLE IF EXISTS orders;"
 ```
 
 ### 2.3 Configuration de Kafka Connect (Le lien vers l'Event Store)
@@ -317,7 +317,7 @@ curl -X POST http://localhost:5000/orders/$ORDER_ID/cancel \
 Vérifiez dans PostgreSQL que les événements sont bien sauvegardés :
 
 ```bash
-docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM orders;"
+docker exec postgres psql -U formation -d formation -c "SELECT * FROM orders;"
 ```
 Vos événements bruts sont persistés fidèlement, offrant une piste d'audit parfaite pour les écritures.
 
