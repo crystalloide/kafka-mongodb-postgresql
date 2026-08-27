@@ -317,6 +317,7 @@ curl -X POST http://localhost:5000/orders/$ORDER_ID/cancel \
 Vérifiez dans PostgreSQL que les événements sont bien sauvegardés :
 
 ```bash
+docker exec -it postgres psql -U formation -d formation -c "\d orders"
 docker exec postgres psql -U formation -d formation -c "SELECT * FROM orders;"
 ```
 Vos événements bruts sont persistés fidèlement, offrant une piste d'audit parfaite pour les écritures.
