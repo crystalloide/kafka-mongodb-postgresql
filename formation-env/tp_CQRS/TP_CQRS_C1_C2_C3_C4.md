@@ -321,6 +321,11 @@ docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM orders
 ```
 Vos événements bruts sont persistés fidèlement, offrant une piste d'audit parfaite pour les écritures.
 
+Remarque : pour supprimer tous les événements dans PostgreSQL  (à ne pas faire ici) :
+
+```bash
+docker exec -it postgres psql -U formation -d formation -c DELETE FROM orders;"
+```
 ---
 
 ## TP C3 — Query Side
