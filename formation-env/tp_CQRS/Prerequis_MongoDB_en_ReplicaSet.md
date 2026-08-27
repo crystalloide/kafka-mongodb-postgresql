@@ -342,7 +342,7 @@ KAFKA_CONNECT=http://localhost:8083
 ```
 
 ```bash
-vi ~/kafka-mongodb-postgresql/formation-env/tp_m4/.env
+vi ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/.env
 ```
 
 mettre le même contenu que précédemment 
