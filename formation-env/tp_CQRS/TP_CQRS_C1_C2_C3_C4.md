@@ -527,5 +527,11 @@ Coupez `projector.py` (Ctrl+C) et relancez-le :
 ```bash
 python projector.py
 ```
-  
+
+**Vérifier le Query Side (Lecture - MongoDB)**
+
+```bash
+curl -s http://localhost:5001/customers/CUST-15/orders
+```
+
 **Résultat :** MongoDB reconstruit instantanément toute sa base de données à partir de l'historique contenu dans Kafka (via l'offset de lecture à 0 : `earliest`), prouvant la robustesse absolue de cette architecture.
