@@ -86,6 +86,7 @@ pymongo>=4.7,<5
 psycopg2-binary
 python-dotenv
 faker
+flask
 ```
 
 - Mettre à jour pip (évite des erreurs de résolution de dépendances) :
