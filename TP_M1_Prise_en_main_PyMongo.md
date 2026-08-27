@@ -87,6 +87,7 @@ psycopg2-binary
 python-dotenv
 faker
 flask
+fastapi
 ```
 
 - Mettre à jour pip (évite des erreurs de résolution de dépendances) :
