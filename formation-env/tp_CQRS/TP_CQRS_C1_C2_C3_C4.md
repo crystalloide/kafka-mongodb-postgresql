@@ -165,6 +165,7 @@ Ouvrez un nouveau terminal, activez l'environnement et assurez-vous d'avoir un e
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
 source ../.venv/bin/activate
+```
 
 - Fichier `requirements.txt` à (re)créer si non présent/renseigné :
 ```bash
