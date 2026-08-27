@@ -158,13 +158,59 @@ Lancer l’API (laisser ce terminal ouvert) :
 python command_api.py
 ```
 
-### 2.2 Préparation de Kafka et PostgreSQL
+### Pré-requis terminal de commande :L
 
 Ouvrez un nouveau terminal, activez l'environnement et assurez-vous d'avoir un environnement propre :
 
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
 source ../.venv/bin/activate
+
+- Fichier `requirements.txt` à (re)créer si non présent/renseigné :
+```bash
+vi requirements.txt
+```
+- avec le contenu suivant :
+```bash
+kafka-python==2.3.1
+pymongo>=4.7,<5
+psycopg2-binary
+python-dotenv
+faker
+flask
+fastapi
+```
+
+- Mettre à jour pip (évite des erreurs de résolution de dépendances) :
+```bash
+pip install --upgrade pip
+```
+
+- Installer les paquets :
+```bash
+pip install -r requirements.txt
+```
+
+- Vérifier l'installation :
+```bash
+pip list
+```
+
+Vous devez voir les 5 paquets avec leurs versions.
+```text
+Package         Version
+--------------- -------
+dnspython       2.8.0
+Faker           40.36.0
+kafka-python    2.3.1
+pip             26.2.1
+psycopg2-binary 2.9.12
+pymongo         4.17.0
+python-dotenv   1.2.2
+
+```
+
+### 2.2 Préparation de Kafka et PostgreSQL
 
 # Recréer le topic proprement
 docker exec -it kafka1 /usr/bin/kafka-topics --bootstrap-server kafka1:19092 --delete --topic orders.events --if-exists
