@@ -542,4 +542,4 @@ python projector.py
 curl -s http://localhost:5001/customers/CUST-15/orders
 ```
 
-**Résultat :** MongoDB reconstruit instantanément toute sa base de données à partir de l'historique contenu dans Kafka (via l'offset de lecture à 0 : `earliest`), prouvant la robustesse absolue de cette architecture.
+**Résultat :**  le script reconstruit **presque** instantanément toute la collection dans la base de données MongoDB à partir de l'historique contenu dans Kafka (via l'offset de lecture à 0 : `earliest`), prouvant la robustesse de cette approche et architecture.
