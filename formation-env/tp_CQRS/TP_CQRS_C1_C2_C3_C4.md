@@ -230,10 +230,16 @@ Werkzeug          3.1.8
 
 ### 2.2 Préparation de Kafka et PostgreSQL
 
+```bash
 # Recréer le topic proprement
 docker exec -it kafka1 /usr/bin/kafka-topics --bootstrap-server kafka1:19092 --delete --topic orders.events --if-exists
-docker exec -it kafka1 /usr/bin/kafka-topics --bootstrap-server kafka1:19092 --create --topic orders.events --partitions 3 --replication-factor 3
+```
 
+```bash
+docker exec -it kafka1 /usr/bin/kafka-topics --bootstrap-server kafka1:19092 --create --topic orders.events --partitions 3 --replication-factor 3
+```
+
+```bash
 # Nettoyer la table PostgreSQL s'il y a un résidu d'un TP précédent
 docker exec -it postgres psql -U formation -d formation -c "DROP TABLE IF EXISTS orders;"
 ```
@@ -241,4 +247,237 @@ docker exec -it postgres psql -U formation -d formation -c "DROP TABLE IF EXISTS
 ### 2.3 Configuration de Kafka Connect (Le lien vers l'Event Store)
 Pour éviter les erreurs de parsing JSON avec Kafka Connect, nous allons utiliser un `StringConverter` couplé à un transformateur `HoistField`. Cela insérera l'événement JSON brut dans une colonne texte `event_payload` dans PostgreSQL.
 
-Générez le fichier de configuration :
+Générez le fichier de configuration :  
+
+```bash
+cat << 'EOF' > connect-sink-orders.json
+{
+  "name": "postgres-sink-orders",
+  "config": {
+    "connector.class": "io.confluent.connect.jdbc.JdbcSinkConnector",
+    "tasks.max": "1",
+    "topics": "orders.events",
+    "connection.url": "jdbc:postgresql://postgres:5432/formation",
+    "connection.user": "formation",
+    "connection.password": "formation",
+    "insert.mode": "insert",
+    "auto.create": "true",
+    "table.name.format": "orders",
+    "value.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "transforms": "Hoist",
+    "transforms.Hoist.type": "org.apache.kafka.connect.transforms.HoistField$Value",
+    "transforms.Hoist.field": "event_payload"
+  }
+}
+EOF
+```
+
+Déployez le connecteur sur Kafka Connect :
+
+```bash
+curl -X DELETE http://localhost:8083/connectors/postgres-sink-orders
+curl -X POST -H "Content-Type: application/json" --data @connect-sink-orders.json http://localhost:8083/connectors
+```
+
+Vérifiez que le connecteur tourne :
+
+```bash
+curl -s http://localhost:8083/connectors/postgres-sink-orders/status | grep RUNNING
+```
+
+### 2.4 Test du Command Side
+
+Créer une commande :
+
+```bash
+ORDER_RESPONSE=$(curl -s -X POST http://localhost:5000/orders \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id": "CUST-1001", "items": [{"product_id": "P-001", "quantity": 1, "unit_price": 79.9}]}')
+echo $ORDER_RESPONSE
+ORDER_ID=$(echo $ORDER_RESPONSE | grep -o '"order_id":"[^"]*' | cut -d'"' -f4)
+```
+
+L'annuler :
+
+```bash
+curl -X POST http://localhost:5000/orders/$ORDER_ID/cancel \
+  -H "Content-Type: application/json" \
+  -d '{"customer_id": "CUST-1001"}'
+```
+
+Vérifiez dans PostgreSQL que les événements sont bien sauvegardés :
+
+```bash
+docker exec -it postgres psql -U formation -d formation -c "SELECT * FROM orders;"
+```
+Vos événements bruts sont persistés fidèlement, offrant une piste d'audit parfaite pour les écritures.
+
+---
+
+## TP C3 — Query Side
+
+**Objectif** : projeter les événements dans une vue de lecture dénormalisée dans MongoDB.
+
+### 3.1 Script projector.py — projection dans MongoDB
+
+Créez `projector.py` :  
+
+```python
+import json
+import os
+from typing import Any
+from dotenv import load_dotenv
+from kafka import KafkaConsumer
+from pymongo import MongoClient
+
+load_dotenv()
+
+BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092,localhost:9094,localhost:9096").split(",")
+ORDERS_EVENTS_TOPIC = "orders.events"
+GROUP_ID = "orders-projector-group"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://formation:formation@localhost:27017/?authSource=admin&replicaSet=rs0")
+
+mongo_client = MongoClient(MONGO_URI)
+db = mongo_client["training"]
+orders_view = db["orders_view"]
+
+consumer = KafkaConsumer(
+    ORDERS_EVENTS_TOPIC,
+    bootstrap_servers=BOOTSTRAP_SERVERS,
+    group_id=GROUP_ID,
+    key_deserializer=lambda k: k.decode("utf-8") if k else None,
+    value_deserializer=lambda v: json.loads(v.decode("utf-8")),
+    auto_offset_reset="earliest",
+    enable_auto_commit=True,
+)
+
+def apply_order_created(event: dict[str, Any]) -> None:
+    payload = event["payload"]
+    order_id = payload["order_id"]
+    doc = {
+        "order_id": order_id,
+        "customer_id": payload["customer_id"],
+        "status": "CREATED",
+        "items": payload["items"],
+        "total_amount": payload["total_amount"],
+        "last_event_id": event["event_id"],
+        "last_event_at": event["occurred_at"],
+    }
+    orders_view.update_one({"order_id": order_id}, {"$set": doc}, upsert=True)
+
+def apply_order_cancelled(event: dict[str, Any]) -> None:
+    payload = event["payload"]
+    orders_view.update_one(
+        {"order_id": payload["order_id"]},
+        {"$set": {"status": "CANCELLED", "last_event_id": event["event_id"], "last_event_at": event["occurred_at"]}},
+        upsert=True,
+    )
+
+if __name__ == "__main__":
+    print("Projecteur démarré... Ctrl+C pour arrêter.")
+    try:
+        for msg in consumer:
+            event = msg.value
+            event_type = event.get("event_type")
+            if event_type == "OrderCreated":
+                apply_order_created(event)
+            elif event_type == "OrderCancelled":
+                apply_order_cancelled(event)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        mongo_client.close()
+        consumer.close()
+```
+
+Lancer le projecteur dans un nouveau terminal :
+
+```bash
+source .venv/bin/activate
+python projector.py
+```
+
+### 3.2 API de lecture query_api.py
+
+Créez `query_api.py` :  
+
+```python
+import os
+from flask import Flask, jsonify
+from dotenv import load_dotenv
+from pymongo import MongoClient
+
+load_dotenv()
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://formation:formation@localhost:27017/?authSource=admin&replicaSet=rs0")
+mongo_client = MongoClient(MONGO_URI)
+db = mongo_client["training"]
+orders_view = db["orders_view"]
+
+app = Flask(__name__)
+
+@app.route("/orders/<order_id>", methods=["GET"])
+def get_order(order_id: str):
+    doc = orders_view.find_one({"order_id": order_id}, {"_id": 0})
+    if not doc:
+        return jsonify({"error": "Order not found"}), 404
+    return jsonify(doc)
+
+@app.route("/customers/<customer_id>/orders", methods=["GET"])
+def get_customer_orders(customer_id: str):
+    docs = list(orders_view.find({"customer_id": customer_id}, {"_id": 0}))
+    return jsonify(docs)
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5001, debug=True)
+```
+
+Lancer l'API dans un nouveau terminal :
+
+```bash
+source .venv/bin/activate
+python query_api.py
+```
+
+---
+
+## TP C4 — Bout en bout et tests
+
+**Générer des données en masse :**
+Dans un terminal, lancez ce script pour simuler du trafic :  
+
+```bash
+for i in $(seq 1 20); do
+  curl -s -X POST http://localhost:5000/orders \
+    -H "Content-Type: application/json" \
+    -d '{"customer_id": "CUST-'"$i"'", "items": [{"product_id": "P-001", "quantity": 1, "unit_price": 79.9}]}' > /dev/null
+done
+echo "20 commandes créées !"
+```
+
+**Vérifier le Command Side (Écriture - PostgreSQL)**
+
+```bash
+docker exec -it postgres psql -U formation -d formation -c "SELECT COUNT(*) FROM orders;"
+```
+
+**Vérifier le Query Side (Lecture - MongoDB)**
+
+```bash
+curl -s http://localhost:5001/customers/CUST-15/orders
+```
+
+**Le grand test de l'Event Sourcing CQRS (Rejeu) :**
+Supprimez totalement la vue de lecture MongoDB :
+
+```bash
+docker exec -it mongodb mongosh -u formation -p formation --authenticationDatabase admin --eval 'db.training.orders_view.drop()'
+```
+
+Coupez `projector.py` (Ctrl+C) et relancez-le :
+
+```bash
+python projector.py
+```
+  
+**Résultat :** MongoDB reconstruit instantanément toute sa base de données à partir de l'historique contenu dans Kafka (via l'offset de lecture à 0 : `earliest`), prouvant la robustesse absolue de cette architecture.
