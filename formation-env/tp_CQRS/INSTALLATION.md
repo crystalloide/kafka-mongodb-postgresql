@@ -12,6 +12,7 @@ Le socle technique du handlab doit fournir :
 ## 2. Installer les dépendances
 
 ```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/
 python -m venv .venv
 # Linux/macOS
 source .venv/bin/activate
