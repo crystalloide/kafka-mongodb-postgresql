@@ -50,4 +50,3 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
 ```
 - Démarre le serveur web Flask sur le port `5001` en mode debug .
-- Flask get_json(force=True) :  Il n'y a pas de problème ici, puisque query_api.py ne reçoit pas de JSON. Dans ``command_api.py``, en revanche, **request.get_json(force=True)** signifie que Flask tente de parser la requête comme JSON même si le Content-Type n'indique pas **application/json**. Flask documente explicitement ce comportement.
