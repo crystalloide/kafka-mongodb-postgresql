@@ -24,6 +24,16 @@ pip install -r requirements.txt
 
 Copier `.env.example` vers `.env` puis adapter les valeurs à l'environnement du handlab.
 
+```bash
+set -a
+source .env
+set +a
+```
+
+```bash
+echo $POSTGRES_DSN
+```
+
 ## 4. Initialiser PostgreSQL
 
 Depuis `psql` :
