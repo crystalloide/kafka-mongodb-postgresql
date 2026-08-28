@@ -39,6 +39,7 @@ echo $POSTGRES_DSN
 Depuis `psql` :
 
 ```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/
 psql "$POSTGRES_DSN" -f sql/init_postgresql.sql
 ```
 
