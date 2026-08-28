@@ -1,8 +1,12 @@
-CQRS
-├── Command Side
-│   └── PostgreSQL — Write Model
-└── Query Side
-    └── MongoDB — Read Model
+
+# CQRS
+
+## Command Side
+- **PostgreSQL** — Write Model
+
+## Query Side
+- **MongoDB** — Read Model
+
 
 
 - Kafka = transport des événements
