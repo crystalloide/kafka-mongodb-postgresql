@@ -100,25 +100,27 @@ python solution/query_api.py
 Créer une commande :
 
 ```bash
-curl -X POST http://localhost:5000/orders \
+ORDER_ID=$(curl -s -X POST http://localhost:5000/orders \
   -H 'Content-Type: application/json' \
-  -d '{"customer_id":"C001","items":[{"product_id":"P001","quantity":2,"unit_price":25.0},{"product_id":"P002","quantity":1,"unit_price":50.0}]}'
+  -d '{"customer_id":"C001","items":[{"product_id":"P001","quantity":2,"unit_price":25.0},{"product_id":"P002","quantity":1,"unit_price":50.0}]}' \
+  | jq -r '.order_id')
+
 ```
 
 Puis lire :
 
 ```bash
-curl http://localhost:5001/orders/<ORDER_ID>
+curl http://localhost:5001/orders/$ORDER_ID
 ```
 
 Annuler :
 
 ```bash
-curl -X POST http://localhost:5000/orders/<ORDER_ID>/cancel
+curl -X POST http://localhost:5000/orders/$ORDER_ID/cancel
 ```
 
 Relire :
 
 ```bash
-curl http://localhost:5001/orders/<ORDER_ID>
+curl http://localhost:5001/orders/$ORDER_ID
 ```
