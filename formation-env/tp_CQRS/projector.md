@@ -4,7 +4,7 @@ Ce document détaille le code source du script Python implémentant un **Project
 
 Le topic Kafka joue ici le rôle de **journal d'événements**.
 
-Pour être précise et rigoureux, nous avons ici un **projecteur CQRS basé sur un journal d'événements Kafka** ou encore **Projecteur CQRS dans une architecture de type Event Sourcing**
+Pour être précis et rigoureux, nous avons ici un **projecteur CQRS basé sur un journal d'événements Kafka** ou encore **Projecteur CQRS dans une architecture de type Event Sourcing**
 
 ---
 
