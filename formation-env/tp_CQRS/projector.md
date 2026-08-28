@@ -2,6 +2,10 @@
 
 Ce document détaille le code source du script Python implémentant un **Projecteur** (CQRS / Event Sourcing) . Il écoute les événements Kafka (`orders.events`), détecte automatiquement si la vue MongoDB est vide pour rejouer l'historique complet, et met à jour une vue matérialisée (`orders_view`) .
 
+Le topic Kafka joue ici le rôle de **journal d'événements**.
+
+Pour être précise et rigoureux, nous avons ici un **projecteur CQRS basé sur un journal d'événements Kafka** ou encore **Projecteur CQRS dans une architecture de type Event Sourcing**
+
 ---
 
 ## Explication ligne par ligne et bloc par bloc
