@@ -32,7 +32,7 @@ def get_order(order_id: str):
         return jsonify({"error": "Order not found"}), 404
     return jsonify(doc)
 ```
-- Route GET `/orders/<order_id>` : Recherche un document dans `orders_view` correspondant à l'identifiant de commande fourni en excluant l'ID MongoDB par défaut (`{"_id": 0}`) .
+- Route GET `/orders/<order_id>` : Recherche un document dans `orders_view` correspondant à l'identifiant de commande fourni en excluant l'ID MongoDB par défaut (`{"_id": 0}`) . Précision : ``_id`` n'est pas supprimé de MongoDB : il est seulement exclu du résultat de cette requête grâce à la projection MongoDB.
 - Renvoie une erreur 404 si la commande n'existe pas, ou le document JSON le cas échéant .
 
 ### 3. Endpoint de consultation des commandes d'un client
@@ -50,3 +50,4 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5001, debug=True)
 ```
 - Démarre le serveur web Flask sur le port `5001` en mode debug .
+- Flask get_json(force=True) :  Il n'y a pas de problème ici, puisque query_api.py ne reçoit pas de JSON. Dans ``command_api.py``, en revanche, **request.get_json(force=True)** signifie que Flask tente de parser la requête comme JSON même si le Content-Type n'indique pas **application/json**. Flask documente explicitement ce comportement.
