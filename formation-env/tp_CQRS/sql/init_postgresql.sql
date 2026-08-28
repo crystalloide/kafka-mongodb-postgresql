@@ -1,3 +1,4 @@
+\c formation
 DROP TABLE IF EXISTS outbox_events CASCADE;
 DROP TABLE IF EXISTS order_items CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
