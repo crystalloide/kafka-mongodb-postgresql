@@ -60,7 +60,9 @@ consumer = KafkaConsumer(
     enable_auto_commit=True,
 )
 ```
-- Initialise le consommateur Kafka abonné à `orders.events` avec désérialisation JSON et un positionnement `auto_offset_reset="earliest"` .
+- Initialise le consommateur Kafka abonné à `orders.events` avec désérialisation JSON
+- `auto_offset_reset="earliest"` signifie qu'on démarre au plus ancien offset disponible dans le topic
+- `enable_auto_commit=True` signifie une validation automatique des offsets : il peut exister une situation où l'offset est considéré comme consommé alors que la mise à jour MongoDB n'est pas correctement finalisée : ``at most once`` dans ce cas. En utilisant un commit explicite, on pourrait alors se retrouver dans l'autre situation de ``at least once`` et des risques de "pilule empoisonnée" si un message ne peut être traité et que le code ne gère pas bien cette situation. 
 
 ### 4. Fonctions de projection des événements
 ```python
