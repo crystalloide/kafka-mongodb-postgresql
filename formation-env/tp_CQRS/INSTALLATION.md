@@ -42,7 +42,11 @@ Depuis `psql` :
 
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/
-# psql "$POSTGRES_DSN" -f sql/init_postgresql.sql
+# Affichage des databases existantes :
+docker exec -i postgres psql -U formation -d formation -c "\l"
+```
+
+```bash
 docker exec -i postgres psql -U formation -d formation < sql/init_postgresql.sql
 ```
 
