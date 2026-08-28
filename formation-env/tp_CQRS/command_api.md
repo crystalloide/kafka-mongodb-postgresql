@@ -107,6 +107,7 @@ def cancel_order(order_id: str):
 
     return jsonify({"order_id": order_id, "status": "CANCELLED"}), 200
 ```
+- - **Flask** : ``get_json(force=True)`` :  signifie que Flask tente de parser la requête comme JSON même si le Content-Type n'indique pas **application/json**. Flask documente explicitement ce comportement.
 - POST `/orders` : Valide la présence des données, génère un UUID de commande, construit l'événement `OrderCreated`, l'envoie dans Kafka avec la clé `order_id` et retourne une réponse 201 .
 - POST `/orders/<order_id>/cancel` : Valide le `customer_id`, construit l'événement `OrderCancelled`, l'envoie dans Kafka et retourne un statut 200 .
 - Remarque : L'endpoint **POST /orders/<order_id>/cancel** retourne immédiatement : **{"order_id": "...", "status": "CANCELLED"}** alors que le statut MongoDB n'a pas encore nécessairement été modifié : l'événement doit d'abord être consommé par **projector.py** : Cela illustre très bien la cohérence éventuelle
