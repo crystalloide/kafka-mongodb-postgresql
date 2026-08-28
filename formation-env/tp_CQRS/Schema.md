@@ -1,10 +1,9 @@
 CQRS
-│
 ├── Command Side
-│      └── PostgreSQL = Write Model
-│
+│   └── PostgreSQL — Write Model
 └── Query Side
-       └── MongoDB = Read Model
+    └── MongoDB — Read Model
+
 
 - Kafka = transport des événements
 - Outbox = fiabilité entre PostgreSQL et Kafka
