@@ -1,5 +1,9 @@
-Flask>=3.1,<4
+kafka-python==2.3.1
 python-dotenv>=1.0,<2
-kafka-python>=2.2,<3
 pymongo>=4.13,<5
 psycopg[binary]>=3.2,<4
+psycopg2-binary
+python-dotenv
+faker
+Flask>=3.1,<4
+fastapi
