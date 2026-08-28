@@ -28,6 +28,7 @@ Copier `.env.example` vers `.env` puis adapter les valeurs à l'environnement du
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/
 set -a
+cp env .env
 source .env
 set +a
 ```
