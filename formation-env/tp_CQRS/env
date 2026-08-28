@@ -20,4 +20,4 @@ REDPANDA_CONSOLE=http://localhost:8090
 KAFKA_CONNECT=http://localhost:8083
 
 # PosteGreSQL initialisation pour le TP CQRS
-POSTGRES_DSN=postgresql://formation:formation@localhost:5432/training
+POSTGRES_DSN=postgresql://formation:formation@localhost:5432/formation
