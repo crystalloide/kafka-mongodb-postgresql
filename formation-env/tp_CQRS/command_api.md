@@ -35,7 +35,8 @@ producer = KafkaProducer(
     acks="all",
 )
 ```
-- Instancie le producteur Kafka avec sérialisation UTF-8/JSON et une durabilité forte (`acks="all"`) .
+- Instancie le producteur Kafka avec sérialisation UTF-8/JSON
+- acks="all" demande à Kafka d'attendre l'acquittement de tous les réplicas actuellement in-sync, ce qui renforce la garantie de durabilité de l'écriture.
 
 ### 3. Fonctions de construction des événements d'écriture
 ```python
@@ -65,6 +66,12 @@ def build_order_cancelled(order_id: str, customer_id: str) -> dict:
 ```
 - `build_order_created`: Formate l'événement de création de commande avec calcul automatique du montant total .
 - `build_order_cancelled`: Formate l'événement d'annulation de commande .
+- Remarque : **datetime.utcnow()** est déprécié depuis Python 3.12 : Python recommande désormais un datetime UTC aware, par exemple **datetime.now(timezone.utc)**
+   - A modifier idéalement et remplacer par :
+```
+from datetime import datetime, timezone
+datetime.now(timezone.utc).isoformat()
+```
 
 ### 4. Endpoints de l'API Commandes (POST)
 ```python
@@ -102,6 +109,13 @@ def cancel_order(order_id: str):
 ```
 - POST `/orders` : Valide la présence des données, génère un UUID de commande, construit l'événement `OrderCreated`, l'envoie dans Kafka avec la clé `order_id` et retourne une réponse 201 .
 - POST `/orders/<order_id>/cancel` : Valide le `customer_id`, construit l'événement `OrderCancelled`, l'envoie dans Kafka et retourne un statut 200 .
+- Remarque : L'endpoint **POST /orders/<order_id>/cancel** retourne immédiatement : **{"order_id": "...", "status": "CANCELLED"}** alors que le statut MongoDB n'a pas encore nécessairement été modifié : l'événement doit d'abord être consommé par **projector.py** : Cela illustre très bien la cohérence éventuelle
+- A noter : 
+```text
+producer.send(...)
+producer.flush()
+```
+signifie que l'envoi est asynchrone au niveau de send(), puis que flush() attend la fin des envois en attente avant de continuer.
 
 ### 5. Lancement de l'API Commandes
 ```python
