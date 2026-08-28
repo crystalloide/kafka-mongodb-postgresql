@@ -25,6 +25,7 @@ pip install -r requirements.txt
 Copier `.env.example` vers `.env` puis adapter les valeurs à l'environnement du handlab.
 
 ```bash
+cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/
 set -a
 source .env
 set +a
