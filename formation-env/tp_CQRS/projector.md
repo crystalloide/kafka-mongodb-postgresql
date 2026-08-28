@@ -46,7 +46,7 @@ else:
 ```
 - Se connecte à la base `training` et cible la collection de vue matérialisée `orders_view` .
 - Vérifie si la vue est vide (`count_documents({}) == 0`) .
-- Si la vue est vide, génère dynamiquement un `GROUP_ID` unique (`uuid.uuid4()`) pour forcer Kafka à repartir du début (`earliest`) et reconstruire tout l'historique des événements . Sinon, utilise le groupe standard `orders-projector-group` pour une reprise normale .
+- Si la vue est vide, génère dynamiquement un `GROUP_ID` unique (`uuid.uuid4()`) pour forcer Kafka à repartir du début (`earliest`) et reconstruire tout l'historique des événements . Sinon, utilise le groupe standard `orders-projector-group` pour une reprise normale . **Précision importante :** Si le groupe est nouveau, **auto_offset_reset="earliest"** demande de commencer au plus ancien offset encore disponible dans le topic afin de reconstruire la vue. ``earliest`` signifie : commencer au plus ancien offset disponible pour ce groupe, pas nécessairement au premier événement historique jamais produit. En effet, si certains anciens événements ont déjà été supprimés par la politique de rétention Kafka ( exemple ! 7 jours de rétention par défaut) , ils ne seront évidemment pas relus. Kafka définit **earliest** précisément comme le plus ancien offset disponible lorsqu'il n'existe pas d'offset initial.
 
 ### 3. Initialisation du KafkaConsumer
 ```python
@@ -87,7 +87,8 @@ def apply_order_cancelled(event: dict[str, Any]) -> None:
     )
 ```
 - `apply_order_created`: Traite l'événement `OrderCreated` en créant ou mettant à jour un document de synthèse dans `orders_view` avec le statut `"CREATED"`, les articles et le montant total .
-- `apply_order_cancelled`: Traite l'événement `OrderCancelled` en basculant le statut de la commande à `"CANCELLED"` dans MongoDB . L'utilisation de `upsert=True` garantit la robustesse même si l'événement d'annulation arrive avant la création (ou en cas de rejeu partiel).
+- `apply_order_cancelled`: Traite l'événement `OrderCancelled` en basculant le statut de la commande à `"CANCELLED"` dans MongoDB .
+- L'utilisation de `upsert=True` permet de traiter même si l'événement d'annulation arrive avant la création (ou en cas de rejeu partiel). Attention, il ne garantit pas à lui seul la cohérence de l'ordre des événements : un **OrderCreated** traité après un **OrderCancelled** pourrait ainsi remettre le statut à **CREATED**. C'est un point particulièrement intéressant pour expliquer pourquoi l'ordre des événements et la logique d'idempotence/versionnement sont importants dans un projecteur.
 
 ### 5. Boucle principale d'écoute
 ```python
