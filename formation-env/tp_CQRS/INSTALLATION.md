@@ -53,12 +53,13 @@ Le script crée les tables du Write Model et de l'Outbox et insère deux clients
 Si le topic n'existe pas déjà :
 
 ```bash
-kafka-topics.sh \
-  --bootstrap-server localhost:9092 \
+docker exec -it kafka1 \
+  /usr/bin/kafka-topics \
+  --bootstrap-server kafka1:19092,kafka2:19092,kafka3:19092 \
   --create \
   --topic orders.events \
   --partitions 3 \
-  --replication-factor 3
+  --replication-factor 3 
 ```
 
 Adapter la commande à l'installation Kafka fournie avec le handlab.
