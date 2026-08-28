@@ -1,12 +1,13 @@
 
-# CQRS
+# Schéma CQRS
 
-## Command Side
-- **PostgreSQL** — Write Model
-
-## Query Side
-- **MongoDB** — Read Model
-
+```text
+CQRS
+├── Command Side
+│   └── PostgreSQL — Write Model
+└── Query Side
+    └── MongoDB — Read Model
+```
 
 
 - Kafka = transport des événements
