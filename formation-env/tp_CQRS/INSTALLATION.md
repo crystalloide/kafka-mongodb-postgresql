@@ -42,8 +42,8 @@ Depuis `psql` :
 
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS/
-sudo apt install postgresql-client-common
-psql "$POSTGRES_DSN" -f sql/init_postgresql.sql
+# psql "$POSTGRES_DSN" -f sql/init_postgresql.sql
+docker exec -i postgres psql -U formation -d formation < sql/init_postgresql.sql
 ```
 
 Le script crée les tables du Write Model et de l'Outbox et insère deux clients de test.
