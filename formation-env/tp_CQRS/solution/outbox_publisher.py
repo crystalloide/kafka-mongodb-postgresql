@@ -8,7 +8,7 @@ from kafka import KafkaProducer
 
 load_dotenv()
 
-POSTGRES_DSN = os.getenv("POSTGRES_DSN", "postgresql://formation:formation@localhost:5432/training")
+POSTGRES_DSN = os.getenv("POSTGRES_DSN", "postgresql://formation:formation@localhost:5432/formation")
 BOOTSTRAP_SERVERS = os.getenv("KAFKA_BOOTSTRAP", "localhost:9092,localhost:9094,localhost:9096").split(",")
 ORDERS_EVENTS_TOPIC = "orders.events"
 POLL_INTERVAL_SECONDS = 1.0

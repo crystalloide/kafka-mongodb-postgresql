@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-POSTGRES_DSN = os.getenv("POSTGRES_DSN", "postgresql://formation:formation@localhost:5432/training")
+POSTGRES_DSN = os.getenv("POSTGRES_DSN", "postgresql://formation:formation@localhost:5432/formation")
 
 app = Flask(__name__)
 
