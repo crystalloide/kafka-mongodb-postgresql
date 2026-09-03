@@ -41,10 +41,84 @@ Dans un nouveau terminal :
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/
 ```
+### Pré-requis
 
+###  0. Préparation VS Code & environnement Python (30 min, transverse)
+
+Objectif : chaque stagiaire a un environnement fonctionnel avant de commencer les TP techniques.
+
+- Vérifier que tous les conteneurs sont `Up (healthy)` :
+```bash
+su - user
+```
+
+```bash
+cd ~/kafka-mongodb-postgresql/formation-env/
+```
+
+```bash
+docker compose ps
+```
+
+- Installation python :
+```bash
+sudo apt update
+sudo apt install python-is-python3
+```
+Vérifiez ensuite :
+```bash
+python --version
+```
+
+- Créer un venv dédié :
 ```bash
 python -m venv .venv && source .venv/bin/activate
 ```
+
+- Fichier `requirements.txt` à (re)créer si non présent/renseigné :
+```bash
+vi requirements.txt
+```
+- avec le contenu suivant :
+```bash
+kafka-python==2.3.1
+pymongo>=4.7,<5
+psycopg2-binary
+python-dotenv
+faker
+flask
+fastapi
+```
+
+- Mettre à jour pip (évite des erreurs de résolution de dépendances) :
+```bash
+pip install --upgrade pip
+```
+
+- Installer les paquets :
+```bash
+pip install -r requirements.txt
+```
+
+- Vérifier l'installation :
+```bash
+pip list
+```
+
+Vous devez voir les 5 paquets avec leurs versions.
+```text
+Package         Version
+--------------- -------
+dnspython       2.8.0
+Faker           40.36.0
+kafka-python    2.3.1
+pip             26.2.1
+psycopg2-binary 2.9.12
+pymongo         4.17.0
+python-dotenv   1.2.2
+
+```
+
 
 ```bash
 cd tp_k2
