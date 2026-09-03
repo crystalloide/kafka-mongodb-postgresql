@@ -19,7 +19,7 @@ pwd
 ```bash
 cd ~
 sudo rm -Rf ~/kafka-mongodb-postgresql
-git clone https://github.com/crystalloide/kafka-mongodb-postgresql.git 
+git clone https://github.com/crystalloide/kafka-mongodb-postgresql 
 ```
 
 ```bash
