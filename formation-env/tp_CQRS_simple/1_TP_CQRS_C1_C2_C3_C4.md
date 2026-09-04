@@ -41,7 +41,7 @@ Ouvrez un terminal et activez votre environnement virtuel :
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/
 python -m venv .venv && source .venv/bin/activate
-cd tp_cqrs
+cd tp_CQRS_simple
 ```
 
 Le fichier `.env` commun doit contenir ces variables :  
@@ -163,7 +163,7 @@ python command_api.py
 Ouvrez un nouveau terminal, activez l'environnement et assurez-vous d'avoir un environnement propre :
 
 ```bash
-cd ~/kafka-mongodb-postgresql/formation-env/tp_cqrs
+cd ~/kafka-mongodb-postgresql/formation-env/tp_CQRS_simple
 source ../.venv/bin/activate
 ```
 
@@ -426,7 +426,7 @@ python -m venv .venv && source .venv/bin/activate
 ```
 
 ```bash
-cd tp_cqrs
+cd tp_CQRS_simple
 python projector.py
 ```
 
@@ -490,7 +490,7 @@ Ouvrez un terminal et activez votre environnement virtuel :
 ```bash
 cd ~/kafka-mongodb-postgresql/formation-env/
 python -m venv .venv && source .venv/bin/activate
-cd tp_cqrs
+cd tp_CQRS_simple
 ```
 
 ```bash
